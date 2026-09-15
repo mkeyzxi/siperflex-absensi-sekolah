@@ -140,7 +140,7 @@
                     <div class="space-y-2">
                         @foreach($availableStudents as $student)
                         <label class="flex items-center p-3 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-50 transition-colors">
-                            <input type="checkbox" wire:model="selectedStudents" value="{{ $student->id }}" class="rounded border-neutral-300 text-primary-600 focus:ring-primary-500 w-5 h-5 mr-3">
+                            <input type="checkbox" wire:model.live="selectedStudents" value="{{ $student->id }}" class="rounded border-neutral-300 text-primary-600 focus:ring-primary-500 w-5 h-5 mr-3">
                             <div>
                                 <p class="font-medium text-neutral-800">{{ $student->name }}</p>
                                 <p class="text-xs text-neutral-500">NIS: {{ $student->nis ?? '-' }}</p>
@@ -189,7 +189,7 @@
                     <div class="space-y-2">
                         @foreach($availableTeachers as $teacher)
                         <label class="flex items-center p-3 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-50 transition-colors">
-                            <input type="checkbox" wire:model="selectedTeachers" value="{{ $teacher->id }}" class="rounded border-neutral-300 text-primary-600 focus:ring-primary-500 w-5 h-5 mr-3">
+                            <input type="checkbox" wire:model.live="selectedTeachers" value="{{ $teacher->id }}" class="rounded border-neutral-300 text-primary-600 focus:ring-primary-500 w-5 h-5 mr-3">
                             <div>
                                 <p class="font-medium text-neutral-800">{{ $teacher->name }}</p>
                                 <p class="text-xs text-neutral-500">NIP: {{ $teacher->nip ?? '-' }}</p>

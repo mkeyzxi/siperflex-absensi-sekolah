@@ -1,8 +1,27 @@
 <div class="max-w-4xl mx-auto space-y-6">
-    <div class="bg-white rounded-xl shadow-sm p-6 flex justify-between items-center border-l-4 border-primary-500">
-        <div>
-            <h2 class="text-2xl font-bold text-neutral-800">Halo, {{ auth()->user()->name }} 👋</h2>
-            <p class="text-neutral-500 mt-1">Jangan lupa untuk mengisi absensi hari ini!</p>
+    <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col md:flex-row justify-between items-center border-l-4 border-primary-500 gap-4">
+        <div class="flex items-center gap-4">
+            <div class="relative group">
+                @php
+                    $user = auth()->user();
+                    $avatarUrl = $user->profile_photo_path 
+                        ? '/storage/' . $user->profile_photo_path 
+                        : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&color=7F9CF5&background=EBF4FF';
+                @endphp
+                <img src="{{ $avatarUrl }}" alt="{{ $user->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary-100">
+                <label class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                    <input type="file" wire:model="profilePhoto" class="hidden" accept="image/*">
+                </label>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-neutral-800">Halo, {{ auth()->user()->name }} 👋</h2>
+                <p class="text-neutral-500 mt-1">Jangan lupa untuk mengisi absensi hari ini!</p>
+                <div wire:loading wire:target="profilePhoto" class="text-xs text-primary-500 mt-1">Mengunggah foto...</div>
+                @if (session()->has('profile_success'))
+                    <div class="text-xs text-green-600 mt-1">{{ session('profile_success') }}</div>
+                @endif
+            </div>
         </div>
         <div class="text-right">
             <p class="text-sm font-medium text-neutral-500">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
@@ -23,16 +42,37 @@
     @endif
 
     @if($attendanceToday)
-        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            </div>
-            <h3 class="text-xl font-bold text-neutral-800">Anda sudah absen hari ini</h3>
-            <p class="text-neutral-500 mt-2">Status: <span class="font-semibold text-primary-600 uppercase">{{ $attendanceToday->status }}</span></p>
-            <p class="text-neutral-500">Waktu: {{ \Carbon\Carbon::parse($attendanceToday->time)->format('H:i') }}</p>
-            @if($attendanceToday->mood)
-                <p class="text-neutral-500 mt-2 italic">"{{ $attendanceToday->reflection_text }}"</p>
+        <div class="bg-white rounded-xl shadow-sm p-6 text-center max-w-lg mx-auto">
+            @if($attendanceToday->photo_path)
+                <div class="mb-6 relative w-32 h-32 mx-auto">
+                    <img src="/storage/{{ $attendanceToday->photo_path }}" class="w-full h-full object-cover rounded-full border-4 border-green-100 shadow-sm" alt="Bukti Absen">
+                    <div class="absolute bottom-0 right-0 bg-green-500 text-white p-1.5 rounded-full border-2 border-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                </div>
+            @else
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
             @endif
+            
+            <h3 class="text-xl font-bold text-neutral-800">Anda sudah absen hari ini</h3>
+            <div class="mt-4 space-y-2 text-sm">
+                <p class="text-neutral-600 flex justify-center gap-2">
+                    <span class="font-medium">Status:</span>
+                    <span class="font-bold text-primary-600 uppercase">{{ $attendanceToday->status }}</span>
+                </p>
+                <p class="text-neutral-600 flex justify-center gap-2">
+                    <span class="font-medium">Waktu:</span>
+                    <span>{{ \Carbon\Carbon::parse($attendanceToday->time)->format('H:i') }} WIB</span>
+                </p>
+                @if($attendanceToday->mood)
+                    <div class="mt-4 p-4 bg-neutral-50 rounded-lg border border-neutral-100">
+                        <p class="font-medium text-neutral-600 text-xs uppercase tracking-wider mb-1">Refleksi / Jurnal</p>
+                        <p class="text-neutral-700 italic">"{{ $attendanceToday->reflection_text }}"</p>
+                    </div>
+                @endif
+            </div>
         </div>
     @else
         <div class="bg-white rounded-xl shadow-sm p-6">
@@ -88,7 +128,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-neutral-700 mb-1">Jurnal / Refleksi Harian <span class="text-red-500">*</span></label>
-                    <textarea wire:model="reflection_text" rows="3" class="w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Ceritakan singkat apa yang ingin kamu pelajari atau capai hari ini... (Wajib diisi)"></textarea>
+                    <textarea wire:model="reflection_text" rows="3" class="w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Ceritakan singkat hari ini (Maksimal 10 kata)..."></textarea>
                     @error('reflection_text') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
 
@@ -156,13 +196,13 @@
                                 
                                 const dataUrl = canvas.toDataURL('image/png');
                                 this.$refs.photoPreview.src = dataUrl;
-                                @this.set('photo', dataUrl);
+                                this.$wire.set('photo', dataUrl);
                                 this.photoCaptured = true;
                             },
                             
                             retakePhoto() {
                                 this.photoCaptured = false;
-                                @this.set('photo', null);
+                                this.$wire.set('photo', null);
                             }
                         }
                     }
@@ -192,8 +232,8 @@
                                         (position) => {
                                             this.latitude = position.coords.latitude;
                                             this.longitude = position.coords.longitude;
-                                            @this.set('latitude', this.latitude);
-                                            @this.set('longitude', this.longitude);
+                                            this.$wire.set('latitude', this.latitude);
+                                            this.$wire.set('longitude', this.longitude);
                                             this.locationError = '';
                                         },
                                         (error) => {

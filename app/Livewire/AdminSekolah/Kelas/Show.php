@@ -86,7 +86,8 @@ class Show extends Component
     public function addSelectedStudents()
     {
         if (!empty($this->selectedStudents)) {
-            $this->classRoom->students()->attach($this->selectedStudents);
+            $pivotData = array_fill_keys($this->selectedStudents, ['school_id' => $this->classRoom->school_id]);
+            $this->classRoom->students()->attach($pivotData);
             session()->flash('success', count($this->selectedStudents) . ' Siswa berhasil ditambahkan ke kelas.');
             $this->closeAddStudentModal();
         }
@@ -141,7 +142,8 @@ class Show extends Component
     public function addSelectedTeachers()
     {
         if (!empty($this->selectedTeachers)) {
-            $this->classRoom->teachers()->attach($this->selectedTeachers);
+            $pivotData = array_fill_keys($this->selectedTeachers, ['school_id' => $this->classRoom->school_id]);
+            $this->classRoom->teachers()->attach($pivotData);
             session()->flash('success', count($this->selectedTeachers) . ' Guru berhasil ditugaskan ke kelas.');
             $this->closeAddTeacherModal();
         }

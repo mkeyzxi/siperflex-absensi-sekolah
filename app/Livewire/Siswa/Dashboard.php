@@ -8,9 +8,13 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;
 
+use Livewire\WithFileUploads;
+
 #[Layout('components.layouts.admin')]
 class Dashboard extends Component
 {
+    use WithFileUploads;
+
     public $status = 'hadir';
     public $mood = '';
     public $reflection_text = '';
@@ -18,10 +22,28 @@ class Dashboard extends Component
     public $longitude;
     public $attendanceToday = null;
     public $photo = null;
+    
+    public $profilePhoto;
 
     public function mount()
     {
         $this->checkAttendance();
+    }
+
+    public function updatedProfilePhoto()
+    {
+        $this->validate([
+            'profilePhoto' => 'image|max:2048', // 2MB Max
+        ]);
+
+        $user = auth()->user();
+        $path = $this->profilePhoto->store('profiles', 'public');
+        
+        $user->update([
+            'profile_photo_path' => $path
+        ]);
+
+        session()->flash('profile_success', 'Foto profil berhasil diperbarui.');
     }
 
     public function checkAttendance()
@@ -37,7 +59,15 @@ class Dashboard extends Component
         $this->validate([
             'status' => 'required|in:hadir,terlambat,sakit,izin',
             'mood' => 'nullable|string|max:255',
-            'reflection_text' => 'required|string',
+            'reflection_text' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (str_word_count($value) > 10) {
+                        $fail('Refleksi maksimal 10 kata.');
+                    }
+                },
+            ],
             'photo' => 'nullable|string',
         ]);
 

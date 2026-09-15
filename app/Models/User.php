@@ -19,6 +19,7 @@ class User extends Authenticatable
         'nis',
         'nip',
         'password',
+        'profile_photo_path',
         'role',
         'is_active',
         'must_change_password',

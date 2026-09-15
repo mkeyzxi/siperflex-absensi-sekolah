@@ -81,84 +81,98 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-neutral-50 text-neutral-600 text-sm uppercase tracking-wider border-b border-neutral-200">
-                            <th class="p-4 font-semibold">Nama Siswa</th>
-                            <th class="p-4 font-semibold text-center">Status & Waktu</th>
-                            <th class="p-4 font-semibold">Mood</th>
-                            <th class="p-4 font-semibold text-center">Aksi</th>
+                            <th class="p-4 font-semibold w-1/4">Siswa</th>
+                            <th class="p-4 font-semibold text-center w-1/6">Status & Waktu</th>
+                            <th class="p-4 font-semibold w-1/4">Jurnal & Lokasi</th>
+                            <th class="p-4 font-semibold text-center w-1/6">Bukti Absen</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-neutral-200">
                         @forelse($students as $student)
                             @php
                                 $attendance = $attendances->get($student->id);
+                                $avatarUrl = $student->profile_photo_path 
+                                    ? '/storage/' . $student->profile_photo_path 
+                                    : 'https://ui-avatars.com/api/?name='.urlencode($student->name).'&color=7F9CF5&background=EBF4FF';
                             @endphp
                             <tr class="hover:bg-neutral-50 transition-colors">
                                 <td class="p-4">
-                                    <div class="font-medium text-neutral-800">{{ $student->name }}</div>
-                                    <div class="text-xs text-neutral-500">NIS: {{ $student->nis ?? '-' }}</div>
+                                    <div class="flex items-center gap-3">
+                                        <img src="{{ $avatarUrl }}" alt="{{ $student->name }}" class="w-10 h-10 rounded-full object-cover border border-neutral-200">
+                                        <div>
+                                            <div class="font-bold text-neutral-800">{{ $student->name }}</div>
+                                            <div class="text-xs text-neutral-500">NIS: {{ $student->nis ?? '-' }}</div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="p-4 text-center">
+                                <td class="p-4 text-center align-top">
                                     @if($attendance)
                                         <div class="mb-1">
                                             @switch($attendance->status)
                                                 @case('hadir')
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Hadir</span>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">HADIR</span>
                                                     @break
                                                 @case('terlambat')
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Terlambat</span>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">TERLAMBAT</span>
                                                     @break
                                                 @case('sakit')
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Sakit</span>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">SAKIT</span>
                                                     @break
                                                 @case('izin')
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Izin</span>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">IZIN</span>
                                                     @break
                                             @endswitch
                                         </div>
-                                        <div class="text-xs text-neutral-500">
-                                            {{ \Carbon\Carbon::parse($attendance->time)->format('H:i') }}
+                                        <div class="text-xs font-semibold text-neutral-600">
+                                            {{ \Carbon\Carbon::parse($attendance->time)->format('H:i') }} WIB
                                         </div>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-600">Belum Absen</span>
                                     @endif
                                 </td>
-                                <td class="p-4">
+                                <td class="p-4 align-top">
                                     @if($attendance)
-                                        <div class="flex items-center space-x-2">
-                                            @if($attendance->mood)
-                                                <span title="Mood: {{ ucfirst($attendance->mood) }}" class="text-2xl">
-                                                    @switch($attendance->mood)
-                                                        @case('senang') 😊 @break
-                                                        @case('sedih') 😢 @break
-                                                        @case('lelah') 😩 @break
-                                                        @case('semangat') 🔥 @break
-                                                        @case('netral') 😐 @break
-                                                    @endswitch
-                                                </span>
+                                        <div class="mb-2">
+                                            <span class="text-xs text-neutral-400 font-medium">LOKASI:</span>
+                                            @if($attendance->latitude && $attendance->longitude)
+                                                <div class="text-xs text-blue-600 truncate max-w-[200px]" title="{{ $attendance->latitude }}, {{ $attendance->longitude }}">
+                                                    <a href="https://www.google.com/maps?q={{ $attendance->latitude }},{{ $attendance->longitude }}" target="_blank" class="hover:underline flex items-center gap-1">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                        Lihat Peta
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="text-xs text-neutral-500">-</div>
                                             @endif
                                         </div>
+                                        <div>
+                                            <span class="text-xs text-neutral-400 font-medium block">REFLEKSI:</span>
+                                            <div class="flex items-start gap-2 mt-1">
+                                                @if($attendance->mood)
+                                                    <span title="Mood: {{ ucfirst($attendance->mood) }}" class="text-lg leading-none mt-0.5">
+                                                        @switch($attendance->mood)
+                                                            @case('senang') 😊 @break
+                                                            @case('sedih') 😢 @break
+                                                            @case('lelah') 😩 @break
+                                                            @case('semangat') 🔥 @break
+                                                            @case('netral') 😐 @break
+                                                        @endswitch
+                                                    </span>
+                                                @endif
+                                                <p class="text-sm text-neutral-700 italic">"{{ $attendance->reflection_text ?? '-' }}"</p>
+                                            </div>
+                                        </div>
                                     @else
-                                        <span class="text-neutral-400">-</span>
+                                        <span class="text-neutral-400 text-sm">-</span>
                                     @endif
                                 </td>
-                                <td class="p-4 text-center">
-                                    @if($attendance)
-                                        @php
-                                            $detailData = [
-                                                'name' => $student->name,
-                                                'nis' => $student->nis ?? '-',
-                                                'status' => $attendance->status,
-                                                'time' => \Carbon\Carbon::parse($attendance->time)->format('H:i'),
-                                                'mood' => $attendance->mood,
-                                                'reflection' => $attendance->reflection_text,
-                                                'photo_url' => $attendance->photo_path ? Storage::url($attendance->photo_path) : null,
-                                                'lat' => $attendance->latitude,
-                                                'lng' => $attendance->longitude,
-                                            ];
-                                        @endphp
-                                        <button onclick="showDetailModal({{ json_encode($detailData) }})" class="px-3 py-1.5 bg-primary-50 text-primary-600 hover:bg-primary-100 rounded-md text-sm font-medium transition-colors border border-primary-200">
-                                            Lihat Detail
-                                        </button>
+                                <td class="p-4 text-center align-top">
+                                    @if($attendance && $attendance->photo_path)
+                                        <a href="/storage/{{ $attendance->photo_path }}" target="_blank" title="Lihat Foto Absen">
+                                            <img src="/storage/{{ $attendance->photo_path }}" alt="Bukti Absen" class="w-16 h-16 object-cover rounded-lg border border-neutral-300 shadow-sm mx-auto hover:opacity-80 transition-opacity">
+                                        </a>
+                                    @elseif($attendance)
+                                        <span class="text-xs text-neutral-400 italic">Tanpa Foto</span>
                                     @else
                                         <span class="text-neutral-400 text-sm">-</span>
                                     @endif
@@ -174,147 +188,5 @@
             </div>
         </div>
     @endif
-
-    <!-- DETAIL MODAL -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
-    <div id="detailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden" style="backdrop-filter: blur(4px);">
-        <div class="bg-white rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="flex justify-between items-center p-4 border-b bg-neutral-50">
-                <div>
-                    <h3 class="text-lg font-bold text-neutral-800" id="modalStudentName">Detail Absensi</h3>
-                    <p class="text-xs text-neutral-500" id="modalStudentNis">NIS: -</p>
-                </div>
-                <button onclick="closeDetailModal()" class="text-neutral-500 hover:text-red-500 bg-white rounded-full p-1 shadow-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <!-- Photo Section -->
-                    <div class="bg-neutral-50 p-4 rounded-xl border border-neutral-200">
-                        <h4 class="text-sm font-bold text-neutral-700 mb-3 flex items-center">
-                            <svg class="w-4 h-4 mr-1 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
-                            Foto Kehadiran
-                        </h4>
-                        <div id="modalPhotoContainer" class="w-full aspect-square bg-neutral-200 rounded-lg overflow-hidden flex items-center justify-center">
-                            <span id="modalNoPhoto" class="text-neutral-500 text-sm hidden">Tidak ada foto</span>
-                            <img id="modalPhoto" src="" class="w-full h-full object-cover hidden" alt="Foto Absen">
-                        </div>
-                    </div>
-                    
-                    <!-- Map Section -->
-                    <div class="bg-neutral-50 p-4 rounded-xl border border-neutral-200">
-                        <h4 class="text-sm font-bold text-neutral-700 mb-3 flex items-center">
-                            <svg class="w-4 h-4 mr-1 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Lokasi Geografis (GPS)
-                        </h4>
-                        <div id="modalMapContainer" class="w-full aspect-square bg-neutral-200 rounded-lg relative overflow-hidden flex items-center justify-center z-0">
-                            <span id="modalNoLocation" class="text-neutral-500 text-sm hidden">Lokasi tidak terdeteksi</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-primary-50 p-5 rounded-xl border border-primary-100">
-                    <h4 class="text-sm font-bold text-primary-800 mb-4 uppercase tracking-wider">Informasi Jurnal / Refleksi</h4>
-                    <div class="flex items-start space-x-4">
-                        <div id="modalMoodIcon" class="text-5xl bg-white p-2 rounded-lg shadow-sm">😐</div>
-                        <div class="flex-1">
-                            <div class="mb-2 flex gap-2 items-center">
-                                <span id="modalStatusBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
-                                <span class="text-sm text-neutral-500">Pukul <span id="modalTime" class="font-bold text-neutral-700"></span></span>
-                            </div>
-                            <p id="modalReflection" class="text-neutral-700 italic border-l-4 border-primary-300 pl-4 py-1 text-sm bg-white p-3 rounded-r-lg shadow-sm w-full leading-relaxed min-h-[60px]"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="p-4 border-t bg-neutral-50 text-right">
-                <button onclick="closeDetailModal()" class="px-4 py-2 bg-neutral-200 text-neutral-800 font-medium rounded-lg hover:bg-neutral-300 transition-colors">Tutup</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let map = null;
-        let marker = null;
-
-        function showDetailModal(data) {
-            // Set Text Data
-            document.getElementById('modalStudentName').innerText = 'Detail Absensi: ' + data.name;
-            document.getElementById('modalStudentNis').innerText = 'NIS: ' + data.nis;
-            document.getElementById('modalTime').innerText = data.time;
-            
-            const reflectionEl = document.getElementById('modalReflection');
-            reflectionEl.innerText = data.reflection ? '"' + data.reflection + '"' : 'Tidak ada catatan refleksi.';
-            
-            // Set Mood
-            let moodEmoji = '😐';
-            switch(data.mood) {
-                case 'senang': moodEmoji = '😊'; break;
-                case 'sedih': moodEmoji = '😢'; break;
-                case 'lelah': moodEmoji = '😩'; break;
-                case 'semangat': moodEmoji = '🔥'; break;
-            }
-            document.getElementById('modalMoodIcon').innerText = moodEmoji;
-
-            // Set Status Badge
-            const badge = document.getElementById('modalStatusBadge');
-            badge.innerText = data.status.toUpperCase();
-            badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold text-white shadow-sm ';
-            if(data.status === 'hadir') badge.className += 'bg-green-500';
-            else if(data.status === 'terlambat') badge.className += 'bg-yellow-500';
-            else if(data.status === 'sakit') badge.className += 'bg-red-500';
-            else if(data.status === 'izin') badge.className += 'bg-blue-500';
-
-            // Set Photo
-            const photoEl = document.getElementById('modalPhoto');
-            const noPhotoEl = document.getElementById('modalNoPhoto');
-            if (data.photo_url) {
-                photoEl.src = data.photo_url;
-                photoEl.classList.remove('hidden');
-                noPhotoEl.classList.add('hidden');
-            } else {
-                photoEl.classList.add('hidden');
-                noPhotoEl.classList.remove('hidden');
-            }
-
-            // Show Modal
-            document.getElementById('detailModal').classList.remove('hidden');
-
-            // Handle Map
-            const noLocationEl = document.getElementById('modalNoLocation');
-            if (data.lat && data.lng) {
-                noLocationEl.classList.add('hidden');
-                
-                if (!map) {
-                    map = L.map('modalMapContainer').setView([data.lat, data.lng], 15);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '© OpenStreetMap'
-                    }).addTo(map);
-                    marker = L.marker([data.lat, data.lng]).addTo(map);
-                } else {
-                    map.setView([data.lat, data.lng], 15);
-                    marker.setLatLng([data.lat, data.lng]);
-                }
-                marker.bindPopup("<b>" + data.name + "</b><br>Lokasi absen.").openPopup();
-
-                setTimeout(() => { map.invalidateSize(); }, 200);
-            } else {
-                if (map) {
-                    map.remove();
-                    map = null;
-                }
-                noLocationEl.classList.remove('hidden');
-            }
-        }
-
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
-        }
-    </script>
+</div>
 </div>
