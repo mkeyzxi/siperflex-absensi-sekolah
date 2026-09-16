@@ -95,7 +95,9 @@ class Dashboard extends Component
                     }
                 },
             ],
-            'photo' => 'nullable|string',
+            'photo' => 'required|string',
+        ], [
+            'photo.required' => 'Foto kehadiran wajib diambil sebagai bukti.',
         ]);
 
         /** @var \App\Models\User $user */
