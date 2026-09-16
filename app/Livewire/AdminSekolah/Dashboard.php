@@ -16,6 +16,12 @@ class Dashboard extends Component
     public $activeTab = 'guru'; // 'guru' or 'siswa'
     public $isFormOpen = false;
     public $isEditing = false;
+    public $search = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     // Form fields
     public $user_id;
@@ -27,11 +33,15 @@ class Dashboard extends Component
 
     protected function rules()
     {
+        $uniqueRule = $this->activeTab === 'guru' 
+            ? 'unique:users,nip,' . $this->user_id 
+            : 'unique:users,nis,' . $this->user_id;
+
         return [
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $this->user_id,
             'email' => 'required|email|max:255|unique:users,email,' . $this->user_id,
-            'identifier' => 'required|string|max:50',
+            'identifier' => 'required|string|max:50|' . $uniqueRule,
             'password' => $this->isEditing ? 'nullable|min:6' : 'required|min:6',
         ];
     }
@@ -114,6 +124,15 @@ class Dashboard extends Component
     {
         $users = User::where('school_id', auth()->user()->school_id)
             ->where('role', $this->activeTab)
+            ->where(function($query) {
+                if ($this->search) {
+                    $query->where('name', 'like', '%' . $this->search . '%')
+                          ->orWhere('username', 'like', '%' . $this->search . '%')
+                          ->orWhere('email', 'like', '%' . $this->search . '%')
+                          ->orWhere('nip', 'like', '%' . $this->search . '%')
+                          ->orWhere('nis', 'like', '%' . $this->search . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(10);
             

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use Livewire\WithFileUploads;
 
@@ -15,14 +17,24 @@ class Dashboard extends Component
 {
     use WithFileUploads;
 
+    /** @var string */
     public $status = 'hadir';
+    /** @var string */
     public $mood = '';
+    /** @var string */
     public $reflection_text = '';
+    /** @var float|string|null */
     public $latitude;
+    /** @var float|string|null */
     public $longitude;
+    /** @var \App\Models\Attendance|null */
     public $attendanceToday = null;
+    /** @var \Illuminate\Database\Eloquent\Collection|array */
+    public $attendanceHistory = [];
+    /** @var string|null */
     public $photo = null;
     
+    /** @var mixed */
     public $profilePhoto;
 
     public function mount()
@@ -34,24 +46,39 @@ class Dashboard extends Component
     {
         $this->validate([
             'profilePhoto' => 'image|max:2048', // 2MB Max
+        ], [
+            'profilePhoto.image' => 'File harus berupa gambar (JPG, PNG).',
+            'profilePhoto.max' => 'Ukuran gambar maksimal adalah 2MB.',
         ]);
 
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $path = $this->profilePhoto->store('profiles', 'public');
         
         $user->update([
             'profile_photo_path' => $path
         ]);
+        
+        // Refresh the cached auth user so the view updates immediately
+        Auth::setUser($user->fresh());
 
         session()->flash('profile_success', 'Foto profil berhasil diperbarui.');
     }
 
     public function checkAttendance()
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $this->attendanceToday = Attendance::where('student_id', $user->id)
             ->whereDate('date', Carbon::today())
             ->first();
+
+        // Ambil riwayat absensi (maksimal 30 hari terakhir)
+        $this->attendanceHistory = Attendance::where('student_id', $user->id)
+            ->whereDate('date', '!=', Carbon::today())
+            ->orderBy('date', 'desc')
+            ->take(30)
+            ->get();
     }
 
     public function submitAttendance()
@@ -71,10 +98,11 @@ class Dashboard extends Component
             'photo' => 'nullable|string',
         ]);
 
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         
         // Find student class
-        $classStudent = \DB::table('class_student')->where('student_id', $user->id)->first();
+        $classStudent = DB::table('class_student')->where('student_id', $user->id)->first();
         
         if (!$classStudent) {
             session()->flash('error', 'Anda belum tergabung di kelas mana pun.');

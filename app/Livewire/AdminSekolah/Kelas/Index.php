@@ -20,6 +20,12 @@ class Index extends Component
 
     public $isFormOpen = false;
     public $isEditing = false;
+    public $search = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     // Form fields
     public $class_id;
@@ -198,6 +204,13 @@ class Index extends Component
         $classes = ClassRoom::with(['homeroomTeacher', 'academicYear'])
             ->withCount(['students'])
             ->where('school_id', $school_id)
+            ->where(function($query) {
+                if ($this->search) {
+                    $query->where('class_name', 'like', '%' . $this->search . '%')
+                          ->orWhere('grade_level', 'like', '%' . $this->search . '%')
+                          ->orWhere('major', 'like', '%' . $this->search . '%');
+                }
+            })
             ->orderBy('grade_level')
             ->orderBy('class_name')
             ->paginate(10);

@@ -6,20 +6,34 @@
         <h2 class="text-2xl font-bold text-neutral-800">Detail Kelas: {{ $classRoom->class_name }}</h2>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-primary-500 flex flex-col md:flex-row justify-between items-start md:items-center">
-        <div>
-            <h3 class="text-lg font-bold text-neutral-800">{{ $classRoom->class_name }}</h3>
-            <p class="text-sm text-neutral-500 mt-1">
-                Tingkat: {{ $classRoom->grade_level }} 
-                @if($classRoom->major) | Jurusan: {{ $classRoom->major }} @endif
-            </p>
-            <p class="text-sm text-neutral-500">Tahun Ajaran: {{ $classRoom->academicYear->name ?? '-' }}</p>
+    <!-- Modern Header Card -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl shadow-lg p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <!-- Abstract Background Decoration -->
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5 blur-2xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-primary-400 opacity-20 blur-xl"></div>
+        
+        <div class="relative z-10">
+            <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">{{ $classRoom->class_name }}</h3>
+            <div class="flex flex-wrap items-center gap-2 mt-2 text-sm text-primary-50 font-medium">
+                <span class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
+                    Tingkat: {{ $classRoom->grade_level }}
+                </span>
+                @if($classRoom->major)
+                    <span class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
+                        Jurusan: {{ $classRoom->major }}
+                    </span>
+                @endif
+                <span class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
+                    Tahun Ajaran: {{ $classRoom->academicYear->name ?? '-' }}
+                </span>
+            </div>
         </div>
-        <div class="mt-4 md:mt-0 text-left md:text-right">
-            <p class="text-sm text-neutral-500">Wali Kelas</p>
-            <p class="font-bold text-primary-700">{{ $classRoom->homeroomTeacher->name ?? 'Belum ditentukan' }}</p>
+        
+        <div class="relative z-10 mt-4 md:mt-0 text-left md:text-right bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 shadow-inner">
+            <p class="text-xs text-primary-200 uppercase tracking-wider font-semibold mb-1">Wali Kelas</p>
+            <p class="font-bold text-lg text-white">{{ $classRoom->homeroomTeacher->name ?? 'Belum ditentukan' }}</p>
             @if($classRoom->homeroomTeacher)
-                <p class="text-xs text-neutral-500">NIP: {{ $classRoom->homeroomTeacher->nip ?? '-' }}</p>
+                <p class="text-xs text-primary-100 font-medium mt-0.5">NIP: {{ $classRoom->homeroomTeacher->nip ?? '-' }}</p>
             @endif
         </div>
     </div>
@@ -50,27 +64,66 @@
                     </button>
                 </div>
                 
-                <div class="overflow-x-auto rounded-lg border border-neutral-200">
+                <!-- Mobile View (Cards) -->
+                <div class="block md:hidden p-2 space-y-3 mt-4">
+                    @forelse($classRoom->students as $student)
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-base flex-shrink-0">
+                                    {{ substr($student->name, 0, 1) }}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-neutral-800 text-sm">{{ $student->name }}</h4>
+                                    <div class="text-xs text-neutral-500 mt-0.5">NIS: <span class="font-medium text-neutral-600">{{ $student->nis ?? '-' }}</span></div>
+                                </div>
+                            </div>
+                            <button wire:click="removeStudent({{ $student->id }})" onclick="confirm('Keluarkan siswa ini dari kelas?') || event.stopImmediatePropagation()" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 px-4 bg-neutral-50 rounded-xl border border-neutral-200">
+                            <svg class="w-10 h-10 mx-auto text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <p class="text-neutral-500 text-sm font-medium">Belum ada siswa di kelas ini.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop View (Table) -->
+                <div class="hidden md:block overflow-x-auto rounded-lg border border-neutral-200 mt-4">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-neutral-50 text-neutral-600 text-xs uppercase tracking-wider border-b border-neutral-200">
-                                <th class="p-3 font-semibold">Nama Siswa</th>
-                                <th class="p-3 font-semibold">NIS</th>
-                                <th class="p-3 font-semibold text-right">Aksi</th>
+                            <tr class="bg-neutral-50 text-neutral-500 text-xs uppercase tracking-widest border-b border-neutral-200">
+                                <th class="p-4 font-bold w-1/2">Nama Siswa</th>
+                                <th class="p-4 font-bold w-1/4">NIS</th>
+                                <th class="p-4 font-bold text-right w-1/4">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-neutral-200">
+                        <tbody class="divide-y divide-neutral-100">
                             @forelse($classRoom->students as $student)
-                                <tr class="hover:bg-neutral-50">
-                                    <td class="p-3 font-medium text-neutral-800">{{ $student->name }}</td>
-                                    <td class="p-3 text-neutral-600">{{ $student->nis ?? '-' }}</td>
-                                    <td class="p-3 text-right">
-                                        <button wire:click="removeStudent({{ $student->id }})" onclick="confirm('Keluarkan siswa ini dari kelas?') || event.stopImmediatePropagation()" class="text-red-500 hover:text-red-700 text-sm font-medium transition-colors">Keluarkan</button>
+                                <tr class="hover:bg-primary-50/50 transition-colors group">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                                {{ substr($student->name, 0, 1) }}
+                                            </div>
+                                            <div class="font-bold text-neutral-800 text-sm group-hover:text-primary-700 transition-colors">{{ $student->name }}</div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-sm font-medium text-neutral-600">{{ $student->nis ?? '-' }}</td>
+                                    <td class="p-4 text-right">
+                                        <button wire:click="removeStudent({{ $student->id }})" onclick="confirm('Keluarkan siswa ini dari kelas?') || event.stopImmediatePropagation()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:text-red-700 hover:border-red-300 hover:bg-red-50 rounded-lg text-xs font-semibold transition-all shadow-sm">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            Keluarkan
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="p-6 text-center text-neutral-500 italic">Belum ada siswa di kelas ini.</td>
+                                    <td colspan="3" class="p-8 text-center text-neutral-500">
+                                        <svg class="w-10 h-10 mx-auto text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                        <p class="font-medium">Belum ada siswa di kelas ini.</p>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -87,27 +140,66 @@
                     </button>
                 </div>
                 
-                <div class="overflow-x-auto rounded-lg border border-neutral-200">
+                <!-- Mobile View (Cards) -->
+                <div class="block md:hidden p-2 space-y-3 mt-4">
+                    @forelse($classRoom->teachers as $teacher)
+                        <div class="bg-white rounded-xl border border-neutral-200 p-4 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-base flex-shrink-0">
+                                    {{ substr($teacher->name, 0, 1) }}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-neutral-800 text-sm">{{ $teacher->name }}</h4>
+                                    <div class="text-xs text-neutral-500 mt-0.5">NIP: <span class="font-medium text-neutral-600">{{ $teacher->nip ?? '-' }}</span></div>
+                                </div>
+                            </div>
+                            <button wire:click="removeTeacher({{ $teacher->id }})" onclick="confirm('Hapus penugasan guru ini dari kelas?') || event.stopImmediatePropagation()" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 px-4 bg-neutral-50 rounded-xl border border-neutral-200">
+                            <svg class="w-10 h-10 mx-auto text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <p class="text-neutral-500 text-sm font-medium">Belum ada guru yang ditugaskan ke kelas ini.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop View (Table) -->
+                <div class="hidden md:block overflow-x-auto rounded-lg border border-neutral-200 mt-4">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-neutral-50 text-neutral-600 text-xs uppercase tracking-wider border-b border-neutral-200">
-                                <th class="p-3 font-semibold">Nama Guru</th>
-                                <th class="p-3 font-semibold">NIP</th>
-                                <th class="p-3 font-semibold text-right">Aksi</th>
+                            <tr class="bg-neutral-50 text-neutral-500 text-xs uppercase tracking-widest border-b border-neutral-200">
+                                <th class="p-4 font-bold w-1/2">Nama Guru</th>
+                                <th class="p-4 font-bold w-1/4">NIP</th>
+                                <th class="p-4 font-bold text-right w-1/4">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-neutral-200">
+                        <tbody class="divide-y divide-neutral-100">
                             @forelse($classRoom->teachers as $teacher)
-                                <tr class="hover:bg-neutral-50">
-                                    <td class="p-3 font-medium text-neutral-800">{{ $teacher->name }}</td>
-                                    <td class="p-3 text-neutral-600">{{ $teacher->nip ?? '-' }}</td>
-                                    <td class="p-3 text-right">
-                                        <button wire:click="removeTeacher({{ $teacher->id }})" onclick="confirm('Hapus penugasan guru ini dari kelas?') || event.stopImmediatePropagation()" class="text-red-500 hover:text-red-700 text-sm font-medium transition-colors">Hapus</button>
+                                <tr class="hover:bg-primary-50/50 transition-colors group">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                                {{ substr($teacher->name, 0, 1) }}
+                                            </div>
+                                            <div class="font-bold text-neutral-800 text-sm group-hover:text-primary-700 transition-colors">{{ $teacher->name }}</div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-sm font-medium text-neutral-600">{{ $teacher->nip ?? '-' }}</td>
+                                    <td class="p-4 text-right">
+                                        <button wire:click="removeTeacher({{ $teacher->id }})" onclick="confirm('Hapus penugasan guru ini dari kelas?') || event.stopImmediatePropagation()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:text-red-700 hover:border-red-300 hover:bg-red-50 rounded-lg text-xs font-semibold transition-all shadow-sm">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            Hapus
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="p-6 text-center text-neutral-500 italic">Belum ada guru yang ditugaskan ke kelas ini.</td>
+                                    <td colspan="3" class="p-8 text-center text-neutral-500">
+                                        <svg class="w-10 h-10 mx-auto text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                        <p class="font-medium">Belum ada guru yang ditugaskan ke kelas ini.</p>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
