@@ -14,6 +14,12 @@ class Dashboard extends Component
 
     public $isFormOpen = false;
     public $isEditing = false;
+    public $search = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     // Form fields
     public $school_id;
@@ -101,7 +107,15 @@ class Dashboard extends Component
 
     public function render()
     {
-        $schools = School::orderBy('name')->paginate(10);
+        $schools = School::where(function($query) {
+            if ($this->search) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('email', 'like', '%' . $this->search . '%')
+                      ->orWhere('npsn', 'like', '%' . $this->search . '%')
+                      ->orWhere('code', 'like', '%' . $this->search . '%');
+            }
+        })->orderBy('name')->paginate(10);
+        
         return view('livewire.superadmin.dashboard', compact('schools'));
     }
 }

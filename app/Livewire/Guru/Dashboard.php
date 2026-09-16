@@ -15,6 +15,12 @@ class Dashboard extends Component
     public $filterDate;
     public $filterStatus = '';
     public $filterClassId = '';
+    public $search = '';
+
+    public function updatingSearch()
+    {
+        // For simple get() queries without pagination, updating this simply triggers re-render
+    }
 
     public function mount()
     {
@@ -52,7 +58,14 @@ class Dashboard extends Component
                     ->where('class_id', $classRoom->id)
                     ->pluck('student_id');
 
-                $students = User::whereIn('id', $studentIds)->orderBy('name')->get();
+                $studentsQuery = User::whereIn('id', $studentIds);
+                if ($this->search) {
+                    $studentsQuery->where(function($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%')
+                          ->orWhere('nis', 'like', '%' . $this->search . '%');
+                    });
+                }
+                $students = $studentsQuery->orderBy('name')->get();
 
                 $attendancesList = Attendance::whereIn('student_id', $studentIds)
                     ->whereDate('date', $this->filterDate)

@@ -17,6 +17,12 @@ class SiswaManager extends Component
     use WithPagination;
 
     public $isFormOpen = false;
+    public $search = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
     
     // Form fields for Change Request
     public $student_id;
@@ -178,6 +184,12 @@ class SiswaManager extends Component
         return User::where('role', 'siswa')
             ->whereHas('studentClasses', function ($query) use ($classIds) {
                 $query->whereIn('class_id', $classIds);
+            })
+            ->where(function($query) {
+                if ($this->search) {
+                    $query->where('name', 'like', '%' . $this->search . '%')
+                          ->orWhere('nis', 'like', '%' . $this->search . '%');
+                }
             })
             ->with(['changeRequests' => function ($query) {
                 $query->where('status', 'pending');
