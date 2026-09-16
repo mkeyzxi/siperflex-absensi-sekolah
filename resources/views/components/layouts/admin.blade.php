@@ -7,8 +7,8 @@
     <title>{{ $title ?? 'Dashboard - SIPERFLEX' }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/webp" href="{{ asset('logo.webp') }}">
-    <link rel="apple-touch-icon" href="{{ asset('logo.webp') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo-transparan.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo-transparan.png') }}">
 
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:title" content="{{ $title ?? 'Dashboard - SIPERFLEX' }}">
