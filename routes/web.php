@@ -35,15 +35,11 @@ Route::middleware(['auth', 'active.user'])->group(function () {
         Route::get('/dashboard', \App\Livewire\Siswa\Dashboard::class)->name('dashboard');
     });
 
-    Route::post('/logout', function () {
+    Route::any('/logout', function () {
         \Illuminate\Support\Facades\Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
         
-        $cookieName = config('session.cookie');
-        
-        return redirect('/login')
-            ->withoutCookie($cookieName)
-            ->withoutCookie('XSRF-TOKEN');
+        return redirect('/login');
     })->name('logout');
 });
