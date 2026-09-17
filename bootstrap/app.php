@@ -19,6 +19,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\ActiveUserMiddleware::class,
         ]);
+
+        $middleware->redirectUsersTo(function () {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if ($user && $user->role === 'super_admin') return '/super-admin/dashboard';
+            if ($user && $user->role === 'admin_sekolah') return '/admin/dashboard';
+            if ($user && $user->role === 'guru') return '/guru/dashboard';
+            if ($user && $user->role === 'siswa') return '/siswa/dashboard';
+            return '/';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

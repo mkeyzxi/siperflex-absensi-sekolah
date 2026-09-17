@@ -1,0 +1,23 @@
+{
+    "name": "SIPERFLEX",
+    "short_name": "Siperflex",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#F8FAFC",
+    "theme_color": "#1D4ED8",
+    "description": "Sistem Informasi Presensi dan Refleksi Fleksibel",
+    "icons": [
+        {
+            "src": "/logo-transparan.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/logo-transparan.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
