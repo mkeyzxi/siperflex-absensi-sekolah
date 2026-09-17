@@ -41,7 +41,7 @@
             <form wire:submit="login" class="space-y-6">
                 <div>
                     <label for="identifier" class="block text-sm font-semibold text-neutral-700 mb-2">
-                        Email / NIS / NIP / Username
+                        Email / NIS / NIP
                     </label>
                     <input wire:model="identifier" id="identifier" type="text"
                         class="w-full rounded-xl border border-neutral-300 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm bg-neutral-50 focus:bg-white"

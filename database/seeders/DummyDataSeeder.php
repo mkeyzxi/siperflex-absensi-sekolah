@@ -23,7 +23,7 @@ class DummyDataSeeder extends Seeder
         $attendanceStatuses = ['hadir', 'izin', 'sakit', 'terlambat'];
         $moods = ['😁 Senang', '🙂 Biasa', '😔 Sedih', '😴 Ngantuk', '🤔 Bingung'];
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             // 1. Create School
             $school = School::create([
                 'code' => 'DUMMY-00' . $i,
@@ -44,13 +44,23 @@ class DummyDataSeeder extends Seeder
                 'is_active' => true,
             ]);
 
+            // 2.5 Create Admin Sekolah
+            User::create([
+                'school_id' => $school->id,
+                'name' => 'Admin SMA Dummy ' . $i,
+                'email' => 'admin.sma' . $i . '@siperflex.test',
+                'nip' => $faker->unique()->numerify('##################'),
+                'password' => $password,
+                'role' => 'admin_sekolah',
+                'is_active' => true,
+            ]);
+
             // 3. Create Teachers (5 per school)
             $teachers = [];
             for ($t = 1; $t <= 5; $t++) {
                 $teachers[] = User::create([
                     'school_id' => $school->id,
                     'name' => $faker->name . ', S.Pd.',
-                    'username' => 'guru' . $t . '_sma' . $i,
                     'email' => 'guru' . $t . '.sma' . $i . '@siperflex.test',
                     'nip' => $faker->unique()->numerify('##################'),
                     'password' => $password,
@@ -100,7 +110,6 @@ class DummyDataSeeder extends Seeder
                 $students[] = User::create([
                     'school_id' => $school->id,
                     'name' => $faker->name,
-                    'username' => 'siswa' . $s . '_sma' . $i,
                     'email' => 'siswa' . $s . '.sma' . $i . '@siperflex.test',
                     'nis' => $faker->unique()->numerify('#####'),
                     'password' => $password,

@@ -111,20 +111,90 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan Siperflex di komputer Anda 
 
 ---
 
+## 🌍 Menjalankan Proyek untuk Akses Publik (Tunneling)
+
+Jika Anda ingin menguji proyek ini (terutama fitur kamera dan menginstal PWA) melalui perangkat lain seperti _smartphone_ tanpa perlu melakukan _hosting_ permanen, Anda dapat menggunakan **Localtunnel**.
+
+1. **Build Aset Frontend (Wajib untuk Akses Publik):**
+   Karena perangkat eksternal tidak dapat mengakses server Vite (`localhost:5173`), Anda harus melakukan _build_ aset CSS dan JS secara statis.
+
+    ```bash
+    npm run build
+    ```
+
+2. **Jalankan Server Laravel:**
+
+    ```bash
+    php artisan serve
+    ```
+
+    _(Pastikan server berjalan di port 8000)._
+
+3. **Jalankan Localtunnel:**
+   Buka terminal/command prompt baru, lalu jalankan:
+    ```bash
+    npx localtunnel --port 8000 --subdomain siperflex
+    ```
+    Tunggu hingga muncul pesan seperti `your url is: https://...`. Salin URL HTTPS tersebut dan buka di HP atau komputer lain.
+
+> **Catatan:** Siperflex sudah dikonfigurasi untuk menangani _Mixed Content_ di balik proxy, sehingga tampilan CSS dan aset tidak akan berantakan meskipun diakses via HTTPS _localtunnel_.
+
+---
+
+## ⚡ Akses Cepat via Wi-Fi Lokal (Tanpa Delay)
+
+Jika HP dan Laptop Anda berada dalam **jaringan Wi-Fi yang sama**, Anda bisa mendapatkan performa *real-time* yang sangat cepat tanpa melalui Localtunnel.
+
+1. **Cari IP Lokal Laptop Anda:**
+   Buka terminal/CMD dan jalankan perintah `ipconfig` (Windows) atau `ifconfig` (Mac/Linux). Catat **IPv4 Address** (contoh: `192.168.1.5`).
+2. **Jalankan Server dengan Binding IP:**
+   Jalankan server Laravel dan arahkan ke semua *interface* jaringan lokal:
+   ```bash
+   php artisan serve --host=0.0.0.0 --port=8000
+   ```
+3. **Akses dari HP:**
+   Buka browser di HP Anda dan masukkan IP tersebut beserta portnya, contoh: `http://192.168.1.5:8000`.
+
+> **Peringatan Fitur Kamera:** Mengakses via Wi-Fi lokal menggunakan protokol HTTP (bukan HTTPS). Karena aturan privasi browser modern, **fitur kamera (jepret foto presensi) mungkin diblokir secara otomatis** pada koneksi HTTP lokal. Gunakan cara ini hanya untuk menguji kecepatan, UI, atau *flow* aplikasi secara keseluruhan. Gunakan Localtunnel jika ingin menguji fitur kamera di HP.
+
+---
+
+## 📱 Progressive Web App (PWA)
+
+Aplikasi ini telah dikonfigurasi secara lengkap sebagai PWA (Progressive Web App).
+
+- **Instalasi:** Saat Anda membuka web ini di peramban _smartphone_ (Chrome/Edge/Safari), sistem akan menawarkan _prompt_ "Add to Home Screen" atau "Install App". Aplikasi akan muncul selayaknya aplikasi _native_ di laci aplikasi HP Anda.
+- **Dukungan Offline:** Terdapat _Service Worker_ yang secara otomatis menyimpan aset-aset penting, serta menampilkan halaman khusus (_Offline Fallback_) jika koneksi internet terputus.
+
 ## 🔑 Akun Uji Coba (Testing Accounts)
 
 Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji akses untuk setiap _role_ menggunakan kredensial di bawah ini.
 
 **Password untuk semua akun adalah:** `password`
 
-| Peran (Role)          | Username Default | Email Default                        |
-| :-------------------- | :--------------- | :----------------------------------- |
-| **Super Admin**       | `superadmin`     | `superadmin@siperflex.com`           |
-| **Admin Sekolah**     | `adminsekolah`   | `admin@sman1siperflex.sch.id`        |
-| **Guru (Wali Kelas)** | `budiguru`       | `budi@sman1siperflex.sch.id`         |
-| **Siswa**             | `andisiswa`      | `andi@student.sman1siperflex.sch.id` |
+### Akun Utama (SMA Negeri 1 Siperflex)
 
-> _Catatan: Form login bersifat fleksibel. Anda dapat masuk menggunakan Email, Username, NIS (bagi Siswa), atau NIP (bagi Guru)._
+| Peran (Role)          | Email Default                        | NIS / NIP                |
+| :-------------------- | :----------------------------------- | :----------------------- |
+| **Super Admin**       | `superadmin@siperflex.com`           | -                        |
+| **Admin Sekolah**     | `admin@sman1siperflex.sch.id`        | NIP: 
+  |
+| **Guru (Wali Kelas)** | `budi@sman1siperflex.sch.id`         | NIP: 198502022012021002  |
+| **Siswa**             | `andi@student.sman1siperflex.sch.id` | NIS: 12345               |
+
+### Akun Dummy (SMA Dummy 1 - 5 Siperflex)
+
+Berikut adalah daftar akun **Admin Sekolah** untuk masing-masing sekolah dummy yang digenerate otomatis:
+
+| Sekolah         | Email Admin                 |
+| :-------------- | :-------------------------- |
+| **SMA Dummy 1** | `admin.sma1@siperflex.test` |
+| **SMA Dummy 2** | `admin.sma2@siperflex.test` |
+| **SMA Dummy 3** | `admin.sma3@siperflex.test` |
+| **SMA Dummy 4** | `admin.sma4@siperflex.test` |
+| **SMA Dummy 5** | `admin.sma5@siperflex.test` |
+
+> _Catatan tambahan: Untuk Guru dan Siswa pada sekolah dummy, login bisa menggunakan Email masing-masing. Form login bersifat fleksibel. Anda dapat masuk menggunakan Email, NIS (bagi Siswa), atau NIP (bagi Guru dan Admin)._
 
 ---
 

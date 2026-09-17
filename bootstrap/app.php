@@ -20,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\ActiveUserMiddleware::class,
         ]);
 
+        $middleware->trustProxies(at: '*');
+
         $middleware->redirectUsersTo(function () {
             $user = \Illuminate\Support\Facades\Auth::user();
             if ($user && $user->role === 'super_admin') return '/super-admin/dashboard';
