@@ -22,7 +22,6 @@ class Login extends Component
     ]);
 
     $user = User::where('email', $this->identifier)
-      ->orWhere('username', $this->identifier)
       ->orWhere('nis', $this->identifier)
       ->orWhere('nip', $this->identifier)
       ->first();

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('school_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->string('email')->nullable()->unique();
-            $table->string('username')->nullable()->unique();
             $table->string('nis')->nullable()->unique();
             $table->string('nip')->nullable();
             $table->string('password');

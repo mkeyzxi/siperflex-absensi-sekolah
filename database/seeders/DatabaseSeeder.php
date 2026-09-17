@@ -42,7 +42,6 @@ class DatabaseSeeder extends Seeder
 
         $superAdmin = User::create([
             'name' => 'Super Admin',
-            'username' => 'superadmin',
             'email' => 'superadmin@siperflex.com',
             'password' => $password,
             'role' => 'super_admin',
@@ -52,7 +51,6 @@ class DatabaseSeeder extends Seeder
         $adminSekolah = User::create([
             'school_id' => $school->id,
             'name' => 'Admin Sekolah',
-            'username' => 'adminsekolah',
             'email' => 'admin@sman1siperflex.sch.id',
             'nip' => '198001012010011001',
             'password' => $password,
@@ -63,7 +61,6 @@ class DatabaseSeeder extends Seeder
         $guru = User::create([
             'school_id' => $school->id,
             'name' => 'Budi Guru, S.Pd',
-            'username' => 'budiguru',
             'email' => 'budi@sman1siperflex.sch.id',
             'nip' => '198502022012021002',
             'password' => $password,
@@ -74,7 +71,6 @@ class DatabaseSeeder extends Seeder
         $siswa = User::create([
             'school_id' => $school->id,
             'name' => 'Andi Siswa',
-            'username' => 'andisiswa',
             'email' => 'andi@student.sman1siperflex.sch.id',
             'nis' => '12345',
             'password' => $password,

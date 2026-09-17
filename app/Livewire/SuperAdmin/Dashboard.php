@@ -3,6 +3,8 @@
 namespace App\Livewire\SuperAdmin;
 
 use App\Models\School;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
@@ -15,6 +17,11 @@ class Dashboard extends Component
     public $isFormOpen = false;
     public $isEditing = false;
     public $search = '';
+
+    // Admin view properties
+    public $isAdminModalOpen = false;
+    public $selectedSchoolAdmins = [];
+    public $selectedSchoolName = '';
 
     public function updatingSearch()
     {
@@ -98,11 +105,44 @@ class Dashboard extends Component
             School::findOrFail($this->school_id)->update($data);
             session()->flash('success', 'Sekolah berhasil diperbarui.');
         } else {
-            School::create($data);
-            session()->flash('success', 'Sekolah baru berhasil ditambahkan.');
+            $school = School::create($data);
+            
+            // Create Admin Sekolah account automatically
+            // Using a unique email based on school code if not using actual email
+            $adminEmail = 'admin.' . strtolower($school->code) . '@siperflex.test';
+            
+            User::create([
+                'school_id' => $school->id,
+                'name' => 'Admin ' . $school->name,
+                'email' => $adminEmail,
+                'password' => Hash::make('password'),
+                'role' => 'admin_sekolah',
+                'is_active' => true,
+            ]);
+
+            session()->flash('success', 'Sekolah baru dan akun Admin berhasil ditambahkan. (Email: ' . $adminEmail . ' | Pass: password)');
         }
 
         $this->closeForm();
+    }
+
+    public function showAdmins($schoolId)
+    {
+        $school = School::findOrFail($schoolId);
+        $this->selectedSchoolName = $school->name;
+        
+        $this->selectedSchoolAdmins = User::where('school_id', $schoolId)
+            ->where('role', 'admin_sekolah')
+            ->get();
+            
+        $this->isAdminModalOpen = true;
+    }
+
+    public function closeAdminModal()
+    {
+        $this->isAdminModalOpen = false;
+        $this->selectedSchoolAdmins = [];
+        $this->selectedSchoolName = '';
     }
 
     public function render()

@@ -238,16 +238,33 @@
                         <script>
                             function cameraComponent() {
                                 return {
+                                    status: @entangle('status'),
                                     stream: null,
                                     photoCaptured: false,
                                     cameraError: '',
                                     photoData: '',
 
                                     initCamera() {
+                                        this.startCamera();
+
+                                        this.$watch('status', () => {
+                                            if (!this.photoCaptured) {
+                                                this.startCamera();
+                                            }
+                                        });
+                                    },
+
+                                    startCamera() {
+                                        if (this.stream) {
+                                            this.stream.getTracks().forEach(track => track.stop());
+                                        }
+
+                                        let mode = (this.status === 'izin' || this.status === 'sakit') ? 'environment' : 'user';
+
                                         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                                             navigator.mediaDevices.getUserMedia({
                                                     video: {
-                                                        facingMode: 'user'
+                                                        facingMode: mode
                                                     }
                                                 })
                                                 .then(stream => {
@@ -303,6 +320,7 @@
                                         this.photoCaptured = false;
                                         this.photoData = '';
                                         this.$wire.set('photo', null);
+                                        this.startCamera();
                                     }
                                 }
                             }

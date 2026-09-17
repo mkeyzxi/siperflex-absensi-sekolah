@@ -113,10 +113,16 @@
                         </div>
                     </div>
                     
-                    <button wire:click="openForm({{ $school->id }})" class="w-full flex justify-center items-center gap-2 bg-primary-50 text-primary-700 hover:bg-primary-100 hover:text-primary-800 py-2.5 rounded-lg text-sm font-semibold transition-colors border border-primary-200">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                        Edit Sekolah
-                    </button>
+                    <div class="flex gap-2">
+                        <button wire:click="showAdmins({{ $school->id }})" class="flex-1 flex justify-center items-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 py-2.5 rounded-lg text-sm font-semibold transition-colors border border-blue-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            Admin
+                        </button>
+                        <button wire:click="openForm({{ $school->id }})" class="flex-1 flex justify-center items-center gap-2 bg-primary-50 text-primary-700 hover:bg-primary-100 hover:text-primary-800 py-2.5 rounded-lg text-sm font-semibold transition-colors border border-primary-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            Edit
+                        </button>
+                    </div>
                 </div>
             @empty
                 <div class="text-center py-8 px-4 bg-neutral-50 rounded-xl border border-neutral-200">
@@ -170,7 +176,11 @@
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-red-50 text-red-700 border border-red-200 shadow-sm">Nonaktif</span>
                                 @endif
                             </td>
-                            <td class="p-5 text-right">
+                            <td class="p-5 text-right space-x-2">
+                                <button wire:click="showAdmins({{ $school->id }})" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:text-blue-700 hover:border-blue-300 hover:bg-blue-50 rounded-lg text-sm font-semibold transition-all shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                    Admin
+                                </button>
                                 <button wire:click="openForm({{ $school->id }})" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:text-primary-700 hover:border-primary-300 hover:bg-primary-50 rounded-lg text-sm font-semibold transition-all shadow-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                     Edit
@@ -192,4 +202,70 @@
             {{ $schools->links() }}
         </div>
     </div>
+
+    <!-- Modal Lihat Admin -->
+    @if($isAdminModalOpen)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 backdrop-blur-sm p-4 overflow-y-auto">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-fade-in-up">
+                <div class="px-6 py-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
+                    <h3 class="text-lg font-bold text-neutral-800 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        Admin Sekolah: {{ $selectedSchoolName }}
+                    </h3>
+                    <button wire:click="closeAdminModal" class="text-neutral-400 hover:text-neutral-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    @if(count($selectedSchoolAdmins) > 0)
+                        <div class="space-y-4">
+                            @foreach($selectedSchoolAdmins as $admin)
+                                <div class="bg-white border border-neutral-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-blue-300 hover:shadow-sm transition-all">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xl flex-shrink-0">
+                                            {{ substr($admin->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-neutral-800">{{ $admin->name }}</h4>
+                                            <div class="text-sm text-neutral-500 flex items-center gap-1 mt-0.5">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                                {{ $admin->email }}
+                                            </div>
+                                            @if($admin->nip)
+                                            <div class="text-xs text-neutral-400 mt-1">
+                                                NIP: {{ $admin->nip }}
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div>
+                                        @if($admin->is_active)
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-green-50 text-green-700 border border-green-200">Aktif</span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-red-50 text-red-700 border border-red-200">Nonaktif</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            </div>
+                            <h4 class="text-lg font-bold text-neutral-800 mb-1">Belum Ada Admin</h4>
+                            <p class="text-neutral-500">Sekolah ini belum memiliki akun Admin Sekolah.</p>
+                        </div>
+                    @endif
+                </div>
+                
+                <div class="px-6 py-4 border-t border-neutral-100 bg-neutral-50 flex justify-end">
+                    <button wire:click="closeAdminModal" class="px-4 py-2 bg-neutral-200 hover:bg-neutral-300 text-neutral-700 font-medium rounded-lg transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
