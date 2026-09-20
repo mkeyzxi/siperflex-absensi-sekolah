@@ -13,6 +13,7 @@
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1D4ED8">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:title" content="{{ $title ?? 'Dashboard - SIPERFLEX' }}">
@@ -247,6 +248,12 @@
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
                         console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        // Eagerly cache current dashboard view
+                        if ('caches' in window) {
+                            caches.open('siperflex-cache-v6').then(cache => {
+                                cache.add(window.location.pathname).catch(e => console.warn('Cache add error:', e));
+                            });
+                        }
                     })
                     .catch(err => {
                         console.log('ServiceWorker registration failed: ', err);

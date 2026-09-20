@@ -143,19 +143,19 @@ Jika Anda ingin menguji proyek ini (terutama fitur kamera dan menginstal PWA) me
 
 ## ⚡ Akses Cepat via Wi-Fi Lokal (Tanpa Delay)
 
-Jika HP dan Laptop Anda berada dalam **jaringan Wi-Fi yang sama**, Anda bisa mendapatkan performa *real-time* yang sangat cepat tanpa melalui Localtunnel.
+Jika HP dan Laptop Anda berada dalam **jaringan Wi-Fi yang sama**, Anda bisa mendapatkan performa _real-time_ yang sangat cepat tanpa melalui Localtunnel.
 
 1. **Cari IP Lokal Laptop Anda:**
    Buka terminal/CMD dan jalankan perintah `ipconfig` (Windows) atau `ifconfig` (Mac/Linux). Catat **IPv4 Address** (contoh: `192.168.1.5`).
 2. **Jalankan Server dengan Binding IP:**
-   Jalankan server Laravel dan arahkan ke semua *interface* jaringan lokal:
-   ```bash
-   php artisan serve --host=0.0.0.0 --port=8000
-   ```
+   Jalankan server Laravel dan arahkan ke semua _interface_ jaringan lokal:
+    ```bash
+    php artisan serve --host=0.0.0.0 --port=8000
+    ```
 3. **Akses dari HP:**
    Buka browser di HP Anda dan masukkan IP tersebut beserta portnya, contoh: `http://192.168.1.5:8000`.
 
-> **Peringatan Fitur Kamera:** Mengakses via Wi-Fi lokal menggunakan protokol HTTP (bukan HTTPS). Karena aturan privasi browser modern, **fitur kamera (jepret foto presensi) mungkin diblokir secara otomatis** pada koneksi HTTP lokal. Gunakan cara ini hanya untuk menguji kecepatan, UI, atau *flow* aplikasi secara keseluruhan. Gunakan Localtunnel jika ingin menguji fitur kamera di HP.
+> **Peringatan Fitur Kamera:** Mengakses via Wi-Fi lokal menggunakan protokol HTTP (bukan HTTPS). Karena aturan privasi browser modern, **fitur kamera (jepret foto presensi) mungkin diblokir secara otomatis** pada koneksi HTTP lokal. Gunakan cara ini hanya untuk menguji kecepatan, UI, atau _flow_ aplikasi secara keseluruhan. Gunakan Localtunnel jika ingin menguji fitur kamera di HP.
 
 ---
 
@@ -174,13 +174,13 @@ Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji akses
 
 ### Akun Utama (SMA Negeri 1 Siperflex)
 
-| Peran (Role)          | Email Default                        | NIS / NIP                |
-| :-------------------- | :----------------------------------- | :----------------------- |
-| **Super Admin**       | `superadmin@siperflex.com`           | -                        |
-| **Admin Sekolah**     | `admin@sman1siperflex.sch.id`        | NIP: 
-  |
-| **Guru (Wali Kelas)** | `budi@sman1siperflex.sch.id`         | NIP: 198502022012021002  |
-| **Siswa**             | `andi@student.sman1siperflex.sch.id` | NIS: 12345               |
+| Peran (Role)          | Email Default                        | NIS / NIP               |
+| :-------------------- | :----------------------------------- | :---------------------- |
+| **Super Admin**       | `superadmin@siperflex.com`           | -                       |
+| **Admin Sekolah**     | `admin@sman1siperflex.sch.id`        | NIP:                    |
+|  |
+| **Guru (Wali Kelas)** | `budi@sman1siperflex.sch.id`         | NIP: 198502022012021002 |
+| **Siswa**             | `andi@student.sman1siperflex.sch.id` | NIS: 12345              |
 
 ### Akun Dummy (SMA Dummy 1 - 5 Siperflex)
 

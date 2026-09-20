@@ -118,7 +118,7 @@
                 <div class="md:bg-white md:rounded-xl md:shadow-sm md:border md:border-neutral-100 md:p-6">
                     <h3 class="text-xl font-bold text-neutral-800 mb-4 md:border-b md:pb-2">Formulir Absensi</h3>
 
-                    <form wire:submit="submitAttendance" class="space-y-5">
+                    <form x-data="attendanceForm()" x-on:submit.prevent="submitOfflineAttendance()" class="space-y-5">
                         <div>
                             <label class="block text-sm font-medium text-neutral-700 mb-2">Status Kehadiran</label>
                             <div class="grid grid-cols-2 gap-3">
@@ -388,11 +388,163 @@
                             }
                         </script>
 
-                        <button type="submit"
-                            class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md">
-                            Kirim Absensi
+                        <button type="submit" x-bind:disabled="isSubmitting"
+                            class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md disabled:opacity-50">
+                            <span x-show="!isSubmitting">Kirim Absensi</span>
+                            <span x-show="isSubmitting">Memproses...</span>
                         </button>
                     </form>
+                    
+                    <script>
+                        function attendanceForm() {
+                            return {
+                                status: @entangle('status'),
+                                mood: @entangle('mood'),
+                                reflection_text: @entangle('reflection_text'),
+                                photo: @entangle('photo'),
+                                latitude: @entangle('latitude'),
+                                longitude: @entangle('longitude'),
+                                isSubmitting: false,
+                                db: null,
+
+                                async init() {
+                                    try {
+                                        this.db = await this.initDB();
+                                        window.addEventListener('online', () => {
+                                            this.syncOfflineData();
+                                        });
+                                        if (navigator.onLine) {
+                                            this.syncOfflineData();
+                                        }
+                                    } catch (e) {
+                                        console.warn("IndexedDB not supported or failed to init", e);
+                                    }
+                                },
+
+                                initDB() {
+                                    return new Promise((resolve, reject) => {
+                                        const request = indexedDB.open('SiperflexOfflineDB', 1);
+                                        request.onupgradeneeded = (e) => {
+                                            const db = e.target.result;
+                                            if (!db.objectStoreNames.contains('attendances')) {
+                                                db.createObjectStore('attendances', { keyPath: 'id', autoIncrement: true });
+                                            }
+                                        };
+                                        request.onsuccess = () => resolve(request.result);
+                                        request.onerror = () => reject(request.error);
+                                    });
+                                },
+
+                                async saveOffline(data) {
+                                    if (!this.db) return false;
+                                    return new Promise((resolve, reject) => {
+                                        const tx = this.db.transaction('attendances', 'readwrite');
+                                        const store = tx.objectStore('attendances');
+                                        const req = store.add(data);
+                                        req.onsuccess = () => resolve(true);
+                                        req.onerror = () => reject(req.error);
+                                    });
+                                },
+
+                                async getOfflineData() {
+                                    if (!this.db) return [];
+                                    return new Promise((resolve, reject) => {
+                                        const tx = this.db.transaction('attendances', 'readonly');
+                                        const store = tx.objectStore('attendances');
+                                        const req = store.getAll();
+                                        req.onsuccess = () => resolve(req.result);
+                                        req.onerror = () => reject(req.error);
+                                    });
+                                },
+                                
+                                async clearOfflineData() {
+                                    if (!this.db) return;
+                                     return new Promise((resolve, reject) => {
+                                        const tx = this.db.transaction('attendances', 'readwrite');
+                                        const store = tx.objectStore('attendances');
+                                        const req = store.clear();
+                                        req.onsuccess = () => resolve();
+                                        req.onerror = () => reject(req.error);
+                                    });
+                                },
+
+                                async submitOfflineAttendance() {
+                                    if (!this.status || !this.reflection_text || !this.photo) {
+                                        alert("Harap lengkapi semua data wajib (Status, Refleksi, dan Foto).");
+                                        return;
+                                    }
+
+                                    this.isSubmitting = true;
+                                    
+                                    const payload = {
+                                        status: this.status,
+                                        mood: this.mood,
+                                        reflection_text: this.reflection_text,
+                                        photo: this.photo,
+                                        latitude: this.latitude,
+                                        longitude: this.longitude,
+                                        offline_created_at: new Date().toISOString()
+                                    };
+
+                                    if (navigator.onLine) {
+                                        try {
+                                            await this.sendSyncRequest([payload]);
+                                            this.$wire.checkAttendance();
+                                            alert("Absensi berhasil terkirim ke server.");
+                                        } catch (e) {
+                                            console.error("Gagal kirim absensi:", e);
+                                            await this.saveOffline(payload);
+                                            alert("Gagal menghubungi server. Absensi disimpan di perangkat dan akan dikirim otomatis saat online.");
+                                            window.location.reload();
+                                        }
+                                    } else {
+                                        await this.saveOffline(payload);
+                                        alert("Anda sedang Offline. Absensi berhasil disimpan di HP Anda dan akan dikirim otomatis ke server saat jaringan kembali normal.");
+                                        window.location.reload();
+                                    }
+                                    
+                                    this.isSubmitting = false;
+                                },
+
+                                async syncOfflineData() {
+                                    const data = await this.getOfflineData();
+                                    if (data && data.length > 0) {
+                                        console.log("Mencoba sinkronisasi absensi offline...");
+                                        try {
+                                            const response = await this.sendSyncRequest(data);
+                                            if (response.success) {
+                                                await this.clearOfflineData();
+                                                console.log("Sinkronisasi offline berhasil");
+                                                this.$wire.checkAttendance();
+                                                // Optional alert to user
+                                                // alert("Absensi offline Anda telah berhasil disinkronkan ke server.");
+                                            }
+                                        } catch (e) {
+                                            console.error("Sinkronisasi gagal, akan dicoba lagi nanti", e);
+                                        }
+                                    }
+                                },
+
+                                async sendSyncRequest(attendances) {
+                                    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                                    const response = await fetch('/siswa/attendance/sync', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': csrfToken ? csrfToken.getAttribute('content') : '',
+                                            'Accept': 'application/json'
+                                        },
+                                        body: JSON.stringify({ attendances })
+                                    });
+
+                                    if (!response.ok) {
+                                        throw new Error("Network error during sync");
+                                    }
+                                    return response.json();
+                                }
+                            }
+                        }
+                    </script>
                 </div>
             @endif
         </div>

@@ -33,6 +33,7 @@ Route::middleware(['auth', 'active.user'])->group(function () {
     // Siswa Routes
     Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
         Route::get('/dashboard', \App\Livewire\Siswa\Dashboard::class)->name('dashboard');
+        Route::post('/attendance/sync', [\App\Http\Controllers\Siswa\OfflineAttendanceController::class, 'sync'])->name('attendance.sync');
     });
 
     Route::any('/logout', function () {
