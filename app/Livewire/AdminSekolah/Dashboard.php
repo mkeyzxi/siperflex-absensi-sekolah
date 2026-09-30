@@ -26,20 +26,18 @@ class Dashboard extends Component
     // Form fields
     public $user_id;
     public $name;
-    public $username;
     public $email;
     public $identifier; // NIP for Guru, NIS for Siswa
     public $password;
 
     protected function rules()
     {
-        $uniqueRule = $this->activeTab === 'guru' 
-            ? 'unique:users,nip,' . $this->user_id 
+        $uniqueRule = $this->activeTab === 'guru'
+            ? 'unique:users,nip,' . $this->user_id
             : 'unique:users,nis,' . $this->user_id;
 
         return [
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $this->user_id,
             'email' => 'required|email|max:255|unique:users,email,' . $this->user_id,
             'identifier' => 'required|string|max:50|' . $uniqueRule,
             'password' => $this->isEditing ? 'nullable|min:6' : 'required|min:6',
@@ -57,18 +55,17 @@ class Dashboard extends Component
     {
         $this->resetValidation();
         $this->isEditing = false;
-        
+
         if ($id) {
             $user = User::findOrFail($id);
             $this->user_id = $user->id;
             $this->name = $user->name;
-            $this->username = $user->username;
             $this->email = $user->email;
             $this->identifier = $this->activeTab === 'guru' ? $user->nip : $user->nis;
             $this->password = '';
             $this->isEditing = true;
         } else {
-            $this->reset(['user_id', 'name', 'username', 'email', 'identifier', 'password']);
+            $this->reset(['user_id', 'name', 'email', 'identifier', 'password']);
         }
 
         $this->isFormOpen = true;
@@ -77,7 +74,7 @@ class Dashboard extends Component
     public function closeForm()
     {
         $this->isFormOpen = false;
-        $this->reset(['user_id', 'name', 'username', 'email', 'identifier', 'password']);
+        $this->reset(['user_id', 'name', 'email', 'identifier', 'password']);
     }
 
     public function save()
@@ -87,7 +84,6 @@ class Dashboard extends Component
         $data = [
             'school_id' => auth()->user()->school_id,
             'name' => $this->name,
-            'username' => $this->username,
             'email' => $this->email,
             'role' => $this->activeTab,
             'is_active' => true,
@@ -127,7 +123,6 @@ class Dashboard extends Component
             ->where(function($query) {
                 if ($this->search) {
                     $query->where('name', 'like', '%' . $this->search . '%')
-                          ->orWhere('username', 'like', '%' . $this->search . '%')
                           ->orWhere('email', 'like', '%' . $this->search . '%')
                           ->orWhere('nip', 'like', '%' . $this->search . '%')
                           ->orWhere('nis', 'like', '%' . $this->search . '%');
@@ -135,7 +130,7 @@ class Dashboard extends Component
             })
             ->orderBy('name')
             ->paginate(10);
-            
+
         return view('livewire.adminsekolah.dashboard', compact('users'));
     }
 }
