@@ -64,7 +64,7 @@
                     </label>
                     <input wire:model="password" id="password" type="password"
                         class="w-full rounded-xl border border-neutral-300 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm bg-neutral-50 focus:bg-white"
-                        placeholder="••••••••" required>
+                        placeholder="Masukkan Password Anda" required>
                     @error('password')
                         <p class="text-danger-500 text-sm mt-2 flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
