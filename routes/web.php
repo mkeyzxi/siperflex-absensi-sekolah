@@ -44,3 +44,8 @@ Route::middleware(['auth', 'active.user'])->group(function () {
         return redirect('/login');
     })->name('logout');
 });
+
+// About Us Page (Public - accessible without auth)
+Route::get('/tentang-kami', function () {
+    return view('tentang-kami');
+})->name('tentang.kami');
