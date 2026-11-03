@@ -52,7 +52,7 @@ class Dashboard extends Component
     {
         $this->resetValidation();
         $this->isEditing = false;
-        
+
         if ($id) {
             $school = School::findOrFail($id);
             $this->school_id = $school->id;
@@ -63,7 +63,7 @@ class Dashboard extends Component
             $this->phone = $school->phone;
             $this->email = $school->email;
             $this->is_active = $school->is_active;
-            
+
             // Adjust validation rules for update
             $this->rules['code'] = 'required|string|max:50|unique:schools,code,' . $this->school_id;
             $this->isEditing = true;
@@ -106,11 +106,11 @@ class Dashboard extends Component
             session()->flash('success', 'Sekolah berhasil diperbarui.');
         } else {
             $school = School::create($data);
-            
+
             // Create Admin Sekolah account automatically
             // Using a unique email based on school code if not using actual email
             $adminEmail = 'admin.' . strtolower($school->code) . '@siperflex.test';
-            
+
             User::create([
                 'school_id' => $school->id,
                 'name' => 'Admin ' . $school->name,
@@ -130,12 +130,22 @@ class Dashboard extends Component
     {
         $school = School::findOrFail($schoolId);
         $this->selectedSchoolName = $school->name;
-        
+
         $this->selectedSchoolAdmins = User::where('school_id', $schoolId)
             ->where('role', 'admin_sekolah')
             ->get();
-            
+
         $this->isAdminModalOpen = true;
+    }
+
+    public function deleteSchool($schoolId)
+    {
+        $school = School::findOrFail($schoolId);
+
+        User::where('school_id', $school->id)->delete();
+        $school->delete();
+
+        session()->flash('success', 'Sekolah dan akun terkait berhasil dihapus.');
     }
 
     public function closeAdminModal()
@@ -155,7 +165,7 @@ class Dashboard extends Component
                       ->orWhere('code', 'like', '%' . $this->search . '%');
             }
         })->orderBy('name')->paginate(10);
-        
+
         return view('livewire.superadmin.dashboard', compact('schools'));
     }
 }

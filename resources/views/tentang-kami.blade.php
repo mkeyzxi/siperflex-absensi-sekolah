@@ -58,13 +58,13 @@
             <nav class="flex items-center gap-3 sm:gap-6">
                 <a href="{{ route('login') }}"
                    class="text-xs sm:text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">Halaman Masuk</a>
-                <a href="{{ url('/admin/dashboard') }}"
+                {{-- <a href="{{ url('/admin/dashboard') }}"
                    class="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 px-3.5 sm:px-4 py-2 rounded-lg shadow-sm transition-colors">
                     Masuk Panel
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"></path>
                     </svg>
-                </a>
+                </a> --}}
             </nav>
         </div>
     </header>
@@ -90,10 +90,10 @@
 
                     <!-- Teks -->
                     <div class="text-center md:text-left">
-                        <span class="animate-fade-up inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-semibold text-primary-100 mb-4">
+                        {{-- <span class="animate-fade-up inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-semibold text-primary-100 mb-4"> --}}
                             <span class="w-2 h-2 rounded-full bg-success-500"></span>
                             Berbasis Web &middot; Sejak 2026
-                        </span>
+                        {{-- </span> --}}
                         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
                             Tentang <span class="text-primary-200">SIPERFLEX</span>
                         </h1>
@@ -166,7 +166,7 @@
                     </div>
                 </div>
                 <div class="px-6 py-5">
-                    <p class="text-neutral-600 text-sm leading-relaxed">
+                    <p class="text-neutral-700 text-base leading-relaxed">
                         SMP Negeri 40 Makassar, yang secara resmi bernama
                         <strong>UPT SPF SMP Negeri 40 Makassar</strong>, adalah sekolah menengah
                         pertama negeri di bawah naungan pemerintah daerah yang berlokasi di
@@ -234,7 +234,7 @@
                     </div>
                 </div>
                 <div class="px-6 py-5">
-                    <p class="text-neutral-600 text-sm leading-relaxed">
+                    <p class="text-neutral-700 text-base leading-relaxed">
                         Siperflex adalah <strong>Sistem Informasi Presensi Fleksibel Berbasis
                         Digital</strong> yang dapat diakses oleh empat komponen pengguna, yaitu
                         super admin, admin, guru, dan siswa. Aplikasi ini dirancang untuk
@@ -300,7 +300,7 @@
                     </div>
                 </div>
                 <div class="px-6 py-5">
-                    <p class="text-neutral-600 text-sm leading-relaxed">
+                    <p class="text-neutral-700 text-base leading-relaxed">
                         Siperflex terealisasikan tahun 2026 dari sebuah projek kepemimpinan yang
                         dikerjakan oleh mahasiswa PPL <strong>Program Profesi Guru (PPG)
                         Universitas Negeri Makassar (UNM)</strong> di SMP Negeri 40 Makassar.
@@ -335,7 +335,7 @@
                         </div>
                         <div class="relative z-10">
                             <p class="text-xs font-bold uppercase tracking-wider text-primary-200 mb-1">Visi</p>
-                            <p class="text-sm leading-relaxed">
+                            <p class="text-base leading-relaxed">
                                 Menjadi sistem informasi presensi digital yang andal, mudah
                                 digunakan, dan transparan dalam mendukung terciptanya budaya
                                 disiplin serta tertib administrasi di lingkungan sekolah.
@@ -357,7 +357,7 @@
                             @foreach ($misi as $i => $teks)
                                 <li class="flex items-start gap-3 bg-neutral-50 border border-neutral-100 rounded-xl p-3.5">
                                     <span class="w-7 h-7 shrink-0 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center">{{ $i + 1 }}</span>
-                                    <p class="text-sm text-neutral-600 leading-relaxed">{{ $teks }}</p>
+                                    <p class="text-base text-neutral-700 leading-relaxed">{{ $teks }}</p>
                                 </li>
                             @endforeach
                         </ol>
@@ -371,17 +371,17 @@
                 $timSmp47 = ['Khusnul Khotimah', 'Irfan Burhan', 'Ramli', 'Ruswaldi', 'Riyadi Ramdani Basri'];
 
                 // 10 gradasi warna berbeda untuk avatar inisial
-                $gradasiAv = [
-                    ['from-primary-600', 'to-primary-400'],
-                    ['from-info-500', 'to-primary-700'],
-                    ['from-success-500', 'to-success-700'],
-                    ['from-warning-500', 'to-danger-500'],
-                    ['from-danger-500', 'to-info-500'],
-                    ['from-primary-500', 'to-info-500'],
-                    ['from-success-500', 'to-primary-600'],
-                    ['from-warning-500', 'to-warning-700'],
-                    ['from-danger-500', 'to-danger-700'],
-                    ['from-info-500', 'to-info-700'],
+                $warnaAv = [
+                    'bg-primary-600',
+                    'bg-info-500',
+                    'bg-success-500',
+                    'bg-warning-500',
+                    'bg-danger-500',
+                    'bg-primary-700',
+                    'bg-info-700',
+                    'bg-success-700',
+                    'bg-warning-700',
+                    'bg-danger-700',
                 ];
 
                 $buatInisial = function (string $nama): string {
@@ -416,7 +416,7 @@
                             {{-- Dosen Pengampu --}}
                             <div class="group flex items-center gap-4 bg-neutral-50 border border-primary-100 rounded-2xl p-4 hover:bg-neutral-surface hover:border-primary-300 hover:shadow-lg transition-all duration-300">
                                 <div class="relative shrink-0">
-                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary-600 to-info-500 text-white text-xl sm:text-2xl font-extrabold flex items-center justify-center shadow-md ring-4 ring-white">
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-primary-600 text-white text-xl sm:text-2xl font-extrabold flex items-center justify-center shadow-md ring-4 ring-white">
                                         <span>SY</span>
                                     </div>
                                     <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
@@ -425,15 +425,15 @@
                                 </div>
                                 <div class="min-w-0">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary-100 text-primary-700">Dosen Pengampu</span>
-                                    <p class="mt-1.5 text-sm sm:text-base font-bold text-neutral-900 truncate">Sufitryono, S.Pd., M.Pd.</p>
-                                    <p class="text-xs text-neutral-500 mt-0.5">PPG &middot; Universitas Negeri Makassar</p>
+                                    <p class="mt-1.5 text-base sm:text-lg font-bold text-neutral-900 truncate">Sufitryono, S.Pd., M.Pd.</p>
+                                    <p class="text-sm text-neutral-600 mt-0.5">PPG &middot; Universitas Negeri Makassar</p>
                                 </div>
                             </div>
 
                             {{-- Guru Pamong --}}
                             <div class="group flex items-center gap-4 bg-neutral-50 border border-success-100 rounded-2xl p-4 hover:bg-neutral-surface hover:border-success-500 hover:shadow-lg transition-all duration-300">
                                 <div class="relative shrink-0">
-                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-success-500 to-warning-500 text-white text-xl sm:text-2xl font-extrabold flex items-center justify-center shadow-md ring-4 ring-white">
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-success-600 text-white text-xl sm:text-2xl font-extrabold flex items-center justify-center shadow-md ring-4 ring-white">
                                         <span>FS</span>
                                     </div>
                                     <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
@@ -442,8 +442,8 @@
                                 </div>
                                 <div class="min-w-0">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-success-100 text-success-700">Guru Pamong</span>
-                                    <p class="mt-1.5 text-sm sm:text-base font-bold text-neutral-900 truncate">Fanna Sriwati, S.Pd.</p>
-                                    <p class="text-xs text-neutral-500 mt-0.5">UPT SPF SMP Negeri 40 Makassar</p>
+                                    <p class="mt-1.5 text-base sm:text-lg font-bold text-neutral-900 truncate">Fanna Sriwati, S.Pd.</p>
+                                    <p class="text-sm text-neutral-600 mt-0.5">UPT SPF SMP Negeri 40 Makassar</p>
                                 </div>
                             </div>
                         </div>
@@ -452,7 +452,7 @@
                         <div class="group flex items-center justify-between gap-4 bg-neutral-50 border border-warning-100 rounded-2xl p-4 mt-3.5 hover:bg-neutral-surface hover:border-warning-500 hover:shadow-lg transition-all duration-300">
                             <div class="flex items-center gap-4 min-w-0">
                                 <div class="relative shrink-0">
-                                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-warning-500 to-danger-500 text-white text-lg sm:text-xl font-extrabold flex items-center justify-center shadow-md ring-4 ring-white">
+                                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-warning-600 text-white text-lg sm:text-xl font-extrabold flex items-center justify-center shadow-md ring-4 ring-white">
                                         <span>NR</span>
                                     </div>
                                     <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
@@ -461,8 +461,8 @@
                                 </div>
                                 <div class="min-w-0">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-warning-100 text-warning-700">Kepala Sekolah</span>
-                                    <p class="mt-1.5 text-sm sm:text-base font-bold text-neutral-900 truncate">Nurhadiawati, S.Pd., M.Pd.</p>
-                                    <p class="text-xs text-neutral-500 mt-0.5">UPT SPF SMP Negeri 40 Makassar</p>
+                                    <p class="mt-1.5 text-base sm:text-lg font-bold text-neutral-900 truncate">Nurhadiawati, S.Pd., M.Pd.</p>
+                                    <p class="text-sm text-neutral-600 mt-0.5">UPT SPF SMP Negeri 40 Makassar</p>
                                 </div>
                             </div>
                             <span class="shrink-0 hidden md:inline-flex items-center gap-1.5 text-[11px] font-semibold text-warning-700 bg-warning-100 border border-warning-500/20 rounded-full px-3 py-1.5">
@@ -485,10 +485,10 @@
                             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                                 @foreach ($timSmp40 as $i => $nama)
                                     <div class="group flex flex-col items-center text-center bg-neutral-50 border border-transparent rounded-2xl px-3 py-5 hover:bg-neutral-surface hover:border-primary-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br {{ $gradasiAv[$i % count($gradasiAv)][0] }} {{ $gradasiAv[$i % count($gradasiAv)][1] }} text-white text-lg font-extrabold flex items-center justify-center shadow-md ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
+                                        <div class="w-16 h-16 rounded-2xl {{ $warnaAv[$i % count($warnaAv)] }} text-white text-lg font-extrabold flex items-center justify-center shadow-md ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
                                             <span>{{ $buatInisial($nama) }}</span>
                                         </div>
-                                        <p class="mt-3 text-xs sm:text-sm font-bold text-neutral-800 leading-snug">{{ $nama }}</p>
+                                        <p class="mt-3 text-sm sm:text-base font-bold text-neutral-800 leading-snug">{{ $nama }}</p>
                                         <span class="mt-1.5 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
 
                                     </div>
@@ -496,27 +496,6 @@
                             </div>
                         </div>
 
-                        {{-- SMPN 47 --}}
-                        <div>
-                            <div class="flex items-center justify-between gap-3 mb-3">
-                                <p class="text-xs font-bold uppercase tracking-wider text-neutral-400">Kolaborasi &middot; Kelompok SMPN 47 Makassar</p>
-                                <span class="text-[10px] font-semibold text-info-700 bg-info-100 border border-info-500/20 rounded-full px-2.5 py-1">5 Anggota</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                                @foreach ($timSmp47 as $i => $nama)
-                                    <div class="group flex flex-col items-center text-center bg-neutral-50 border border-transparent rounded-2xl px-3 py-5 hover:bg-neutral-surface hover:border-info-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br {{ $gradasiAv[($i + 5) % count($gradasiAv)][0] }} {{ $gradasiAv[($i + 5) % count($gradasiAv)][1] }} text-white text-lg font-extrabold flex items-center justify-center shadow-md ring-4 ring-white group-hover:scale-105 transition-transform duration-300">
-                                            <span>{{ $buatInisial($nama) }}</span>
-                                        </div>
-                                        <p class="mt-3 text-xs sm:text-sm font-bold text-neutral-800 leading-snug">{{ $nama }}</p>
-                                        <span class="mt-1.5 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-info-500"></span>
-                                            Tim
-                                        </span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

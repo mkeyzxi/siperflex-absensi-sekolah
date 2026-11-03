@@ -290,24 +290,6 @@
                         </div>
                     </div>
 
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3">Kolaborasi &middot; Kelompok SMPN 47 Makassar</p>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            @foreach (['Khusnul Khotimah', 'Irfan Burhan', 'Ramli', 'Ruswaldi', 'Riyadi Ramdani Basri'] as $nama)
-                                @php
-                                    $inisial = strtoupper(collect(explode(' ', $nama))->take(2)->map(function ($kata) {
-                                        return mb_substr(preg_replace('/[^A-Za-z]/', '', $kata), 0, 1);
-                                    })->implode(''));
-                                @endphp
-                                <div class="group flex items-center gap-3 bg-neutral-50 border border-neutral-200 hover:border-info-300 hover:bg-info-50 rounded-xl p-3 transition-all hover:shadow-sm">
-                                    <div class="w-10 h-10 rounded-full bg-info-500 text-white text-xs font-bold flex items-center justify-center shrink-0">
-                                        <span>{{ $inisial }}</span>
-                                    </div>
-                                    <p class="text-xs sm:text-sm font-semibold text-neutral-700 leading-snug">{{ $nama }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
