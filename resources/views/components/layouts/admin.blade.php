@@ -25,7 +25,7 @@
     <!-- Optional: Alpine.js for dropdowns/sidebar toggle if Livewire doesn't handle it entirely -->
 </head>
 
-<body class="bg-neutral-bg text-neutral-900 font-sans antialiased min-h-screen flex" x-data="{ sidebarOpen: false }">
+<body class="bg-neutral-bg text-neutral-900 font-sans antialiased min-h-screen flex overflow-x-hidden" x-data="{ sidebarOpen: false }">
 
     <!-- Sidebar -->
     <aside class="w-64 bg-primary-700 text-white flex flex-col hidden md:flex shrink-0 transition-all duration-300">
@@ -251,7 +251,7 @@
                 </a>
             @endif
 
-            
+
 
         </div>
     </nav>
