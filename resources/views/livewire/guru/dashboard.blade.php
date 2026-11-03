@@ -1,21 +1,21 @@
-<div class="space-y-6">
+<div class="space-y-6 max-w-full overflow-x-hidden">
     <!-- Modern Header Card -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl shadow-lg p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+    <div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 rounded-none sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 w-full min-w-0">
         <!-- Abstract Background Decoration -->
         <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5 blur-2xl"></div>
         <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-primary-400 opacity-20 blur-xl"></div>
-        
+
         <div class="relative z-10">
             <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Dashboard Guru</h2>
             <p class="text-primary-100 font-medium mt-1">Selamat datang, {{ auth()->user()->name }}</p>
         </div>
-        
-        <div class="relative z-10 w-full sm:w-auto flex flex-col sm:items-end text-left sm:text-right mt-4 sm:mt-0">
-            <p class="text-sm font-semibold text-primary-100">{{ \Carbon\Carbon::parse($filterDate)->translatedFormat('l, d F Y') }}</p>
+
+        <div class="relative z-10 w-full sm:w-auto flex flex-col sm:items-end text-left sm:text-right mt-2 sm:mt-0 min-w-0">
+            <p class="text-sm font-semibold text-primary-100 break-words">{{ \Carbon\Carbon::parse($filterDate)->translatedFormat('l, d F Y') }}</p>
             @if($classRoom)
-                <span class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white text-sm font-semibold px-3 py-1.5 rounded-lg border border-white/10 mt-2 shadow-inner">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    Kelas: {{ $classRoom->class_name }}
+                <span class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white text-sm font-semibold px-3 py-1.5 rounded-lg border border-white/10 mt-2 shadow-inner max-w-full">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    <span class="truncate">Kelas: {{ $classRoom->class_name }}</span>
                 </span>
             @endif
         </div>
@@ -52,25 +52,38 @@
 
         <div class="md:bg-white md:rounded-xl md:shadow-sm md:overflow-hidden">
             <!-- FILTERS -->
-            <div class="p-4 md:p-4 bg-white md:bg-neutral-50 rounded-2xl md:rounded-none shadow-sm md:shadow-none md:border-b md:border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-4 mb-6 md:mb-0">
-                <h3 class="text-lg font-bold text-neutral-800 shrink-0">Rekap Absensi</h3>
-                <div class="flex flex-col sm:flex-row flex-wrap items-center justify-end gap-3 w-full md:w-auto">
-                    <div class="relative w-full sm:w-48 shrink-0">
+            <div class="p-4 md:p-4 bg-white md:bg-neutral-50 rounded-2xl md:rounded-none shadow-sm md:shadow-none md:border-b md:border-neutral-200 flex flex-col gap-4 mb-6 md:mb-0 w-full min-w-0">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full min-w-0">
+                    <h3 class="text-lg font-bold text-neutral-800 break-words">Rekap Absensi</h3>
+                    <div class="flex items-center gap-2 self-stretch sm:self-auto">
+                        <button wire:click="exportCsv" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-medium shadow-sm transition-colors flex items-center justify-center gap-1" title="Export ke CSV">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            CSV
+                        </button>
+                        <button wire:click="exportPdf" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-xs font-medium shadow-sm transition-colors flex items-center justify-center gap-1" title="Export ke PDF">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 w-full md:flex-row md:flex-wrap md:items-center md:justify-end">
+                    <div class="relative w-full md:w-48 min-w-0">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari siswa..." class="w-full pl-9 pr-3 py-1.5 bg-white border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 font-medium">
+                        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari siswa..." class="w-full pl-9 pr-3 py-2 bg-white border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 font-medium min-w-0">
                     </div>
                     @if(count($availableClasses) > 1)
-                        <select wire:model.live="filterClassId" class="w-full sm:w-auto rounded-lg border border-neutral-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium">
+                        <select wire:model.live="filterClassId" class="w-full md:w-auto rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium min-w-0">
                             @foreach($availableClasses as $ac)
                                 <option value="{{ $ac->id }}">{{ $ac->class_name }}</option>
                             @endforeach
                         </select>
                     @endif
-                    
-                    <input type="date" wire:model.live="filterDate" class="rounded-md border border-neutral-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-                    <select wire:model.live="filterStatus" class="rounded-md border border-neutral-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+
+                    <input type="date" wire:model.live="filterDate" class="w-full md:w-auto rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-0">
+                    <select wire:model.live="filterStatus" class="w-full md:w-auto rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium min-w-0">
                         <option value="">Semua Status</option>
                         <option value="hadir">Hadir</option>
                         <option value="terlambat">Terlambat</option>
@@ -78,32 +91,21 @@
                         <option value="izin">Izin</option>
                         <option value="belum_absen">Belum Absen</option>
                     </select>
-                    
-                    <div class="flex items-center space-x-2 border-l border-neutral-300 pl-3">
-                        <button wire:click="exportCsv" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition-colors flex items-center gap-1" title="Export ke CSV">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            CSV
-                        </button>
-                        <button wire:click="exportPdf" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition-colors flex items-center gap-1" title="Export ke PDF">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            PDF
-                        </button>
-                    </div>
                 </div>
             </div>
-            
+
             <!-- Mobile View (Cards) -->
             <div class="block md:hidden space-y-4">
                 @forelse($students as $student)
                     @php
                         $attendance = $attendances->get($student->id);
-                        $avatarUrl = $student->profile_photo_path 
-                            ? '/storage/' . $student->profile_photo_path 
+                        $avatarUrl = $student->profile_photo_path
+                            ? '/storage/' . $student->profile_photo_path
                             : 'https://ui-avatars.com/api/?name='.urlencode($student->name).'&color=7F9CF5&background=EBF4FF';
                     @endphp
                     <div class="bg-white rounded-2xl border border-neutral-100 p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                         <!-- Removed left border indicator, relying on modern card design and badges -->
-                        
+
                         <div class="flex justify-between items-start mb-4 border-b border-neutral-50 pb-4">
                             <div class="flex items-center gap-3">
                                 <img src="{{ $avatarUrl }}" alt="{{ $student->name }}" class="w-10 h-10 rounded-full object-cover border border-neutral-200">
@@ -207,8 +209,8 @@
                         @forelse($students as $student)
                             @php
                                 $attendance = $attendances->get($student->id);
-                                $avatarUrl = $student->profile_photo_path 
-                                    ? '/storage/' . $student->profile_photo_path 
+                                $avatarUrl = $student->profile_photo_path
+                                    ? '/storage/' . $student->profile_photo_path
                                     : 'https://ui-avatars.com/api/?name='.urlencode($student->name).'&color=7F9CF5&background=EBF4FF';
                             @endphp
                             <tr class="hover:bg-primary-50/50 transition-colors group">

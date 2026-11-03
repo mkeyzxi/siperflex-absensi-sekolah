@@ -1,6 +1,6 @@
-<div class="space-y-6 md:pb-6 pb-20">
+<div class="space-y-6 md:pb-6 pb-20 max-w-full overflow-x-hidden">
     <!-- Modern Header Card -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 rounded-none md:rounded-2xl shadow-lg p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+    <div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 rounded-none md:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 mb-6 w-full min-w-0">
         <!-- Abstract Background Decoration -->
         <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5 blur-2xl"></div>
         <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-primary-400 opacity-20 blur-xl"></div>
@@ -10,12 +10,12 @@
             <p class="text-primary-100 font-medium mt-1">Kelola data guru dan siswa di sekolah Anda</p>
         </div>
 
-        <div class="relative z-10 w-full md:w-auto">
-            <div class="flex rounded-xl shadow-lg bg-white/10 backdrop-blur-md border border-white/20 p-1">
-                <button wire:click="setTab('guru')" class="flex-1 md:flex-none px-6 py-2.5 text-sm font-bold rounded-lg transition-all {{ $activeTab === 'guru' ? 'bg-white text-primary-700 shadow' : 'text-white hover:bg-white/20' }}">
+        <div class="relative z-10 w-full md:w-auto min-w-0">
+            <div class="flex w-full md:w-auto rounded-xl shadow-lg bg-white/10 backdrop-blur-md border border-white/20 p-1">
+                <button wire:click="setTab('guru')" class="flex-1 md:flex-none px-3 sm:px-6 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all {{ $activeTab === 'guru' ? 'bg-white text-primary-700 shadow' : 'text-white hover:bg-white/20' }}">
                     Data Guru
                 </button>
-                <button wire:click="setTab('siswa')" class="flex-1 md:flex-none px-6 py-2.5 text-sm font-bold rounded-lg transition-all {{ $activeTab === 'siswa' ? 'bg-white text-primary-700 shadow' : 'text-white hover:bg-white/20' }}">
+                <button wire:click="setTab('siswa')" class="flex-1 md:flex-none px-3 sm:px-6 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all {{ $activeTab === 'siswa' ? 'bg-white text-primary-700 shadow' : 'text-white hover:bg-white/20' }}">
                     Data Siswa
                 </button>
             </div>
@@ -32,14 +32,14 @@
     <div class="md:bg-white md:rounded-2xl md:shadow-sm md:p-6 md:border md:border-neutral-100">
 
         <!-- Action Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 md:mb-6 px-4 md:px-0">
-            <h3 class="text-xl font-bold text-neutral-800">Daftar {{ ucfirst($activeTab) }}</h3>
-            <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
-                <div class="relative w-full sm:w-64">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 md:mb-6 px-4 md:px-0 w-full min-w-0">
+            <h3 class="text-xl font-bold text-neutral-800 break-words">Daftar {{ ucfirst($activeTab) }}</h3>
+            <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 min-w-0">
+                <div class="relative w-full sm:w-64 min-w-0">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari {{ $activeTab }}..." class="w-full pl-10 pr-3 py-2.5 bg-white md:bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all shadow-sm md:shadow-none">
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari {{ $activeTab }}..." class="w-full pl-10 pr-3 py-2.5 bg-white md:bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all shadow-sm md:shadow-none min-w-0">
                 </div>
                 <button wire:click="openForm" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md transition-colors w-full sm:w-auto flex justify-center items-center gap-2 flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -107,18 +107,18 @@
         @endif
 
         <!-- Mobile View (Compact List Cards) -->
-        <div class="block md:hidden px-4 space-y-3">
+        <div class="block md:hidden px-4 space-y-3 max-w-full overflow-x-hidden">
             @forelse($users as $user)
-                <div class="bg-white rounded-xl border border-neutral-200 p-4 shadow-sm flex flex-col gap-3 relative hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="flex items-center gap-3">
+                <div class="bg-white rounded-xl border border-neutral-200 p-4 shadow-sm flex flex-col gap-3 relative hover:shadow-md transition-shadow w-full min-w-0">
+                    <div class="flex items-start justify-between gap-2 w-full min-w-0">
+                        <div class="flex items-center gap-3 min-w-0">
                             <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-base flex-shrink-0">
                                 {{ substr($user->name, 0, 1) }}
                             </div>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-neutral-800 text-sm leading-tight truncate">{{ $user->name }}</h4>
-                                <div class="text-xs text-neutral-500 mt-1 truncate">{{ $user->email }}</div>
-                                <div class="text-xs font-medium text-neutral-600 mt-1">{{ $activeTab === 'guru' ? 'NIP' : 'NIS' }}: {{ $activeTab === 'guru' ? ($user->nip ?? '-') : ($user->nis ?? '-') }}</div>
+                            <div class="min-w-0 flex-1 overflow-hidden">
+                                <h4 class="font-bold text-neutral-800 text-sm leading-tight break-words">{{ $user->name }}</h4>
+                                <div class="text-xs text-neutral-500 mt-1 break-all">{{ $user->email }}</div>
+                                <div class="text-xs font-medium text-neutral-600 mt-1 break-all">{{ $activeTab === 'guru' ? 'NIP' : 'NIS' }}: {{ $activeTab === 'guru' ? ($user->nip ?? '-') : ($user->nis ?? '-') }}</div>
                             </div>
                         </div>
 
