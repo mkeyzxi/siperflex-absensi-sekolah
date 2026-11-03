@@ -113,7 +113,9 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan Siperflex di komputer Anda 
 
 ## 🌍 Menjalankan Proyek untuk Akses Publik (Tunneling)
 
-Jika Anda ingin menguji proyek ini (terutama fitur kamera dan menginstal PWA) melalui perangkat lain seperti _smartphone_ tanpa perlu melakukan _hosting_ permanen, Anda dapat menggunakan **Localtunnel**.
+Jika Anda ingin menguji proyek ini (terutama fitur kamera dan menginstal PWA) melalui perangkat lain seperti _smartphone_ tanpa perlu melakukan _hosting_ permanen, Anda dapat menggunakan **Localtunnel** atau **Cloudflare Tunnel**.
+
+### Opsi 1: Localtunnel
 
 1. **Build Aset Frontend (Wajib untuk Akses Publik):**
    Karena perangkat eksternal tidak dapat mengakses server Vite (`localhost:5173`), Anda harus melakukan _build_ aset CSS dan JS secara statis.
@@ -138,6 +140,42 @@ Jika Anda ingin menguji proyek ini (terutama fitur kamera dan menginstal PWA) me
     Tunggu hingga muncul pesan seperti `your url is: https://...`. Salin URL HTTPS tersebut dan buka di HP atau komputer lain.
 
 > **Catatan:** Siperflex sudah dikonfigurasi untuk menangani _Mixed Content_ di balik proxy, sehingga tampilan CSS dan aset tidak akan berantakan meskipun diakses via HTTPS _localtunnel_.
+
+### Opsi 2: Cloudflare Tunnel
+
+Alternatif yang lebih stabil dan aman untuk akses publik adalah **Cloudflare Tunnel**.
+
+1. **Pastikan Cloudflare Tunnel sudah terinstal:**
+
+    ```bash
+    npx cloudflared tunnel --help
+    ```
+
+    Jika belum tersedia, install secara global atau jalankan lewat `npx` langsung.
+
+2. **Jalankan Laravel di background:**
+
+    ```bash
+    php artisan serve --host=0.0.0.0 --port=8000
+    ```
+
+3. **Buat tunnel baru:**
+
+    ```bash
+    npx cloudflared tunnel --url http://localhost:8000
+    ```
+
+4. **Cloudflare akan menghasilkan URL HTTPS** seperti:
+
+    ```bash
+    https://nama-random.trycloudflare.com
+    ```
+
+5. **Buka URL tersebut dari HP atau browser lain**, lalu coba akses aplikasi.
+
+> **Keunggulan Cloudflare Tunnel:** URL lebih stabil, dukungan HTTPS otomatis, dan lebih cocok untuk pengujian akses dari perangkat lain tanpa hosting permanen.
+
+---
 
 ---
 
@@ -168,33 +206,45 @@ Aplikasi ini telah dikonfigurasi secara lengkap sebagai PWA (Progressive Web App
 
 ## 🔑 Akun Uji Coba (Testing Accounts)
 
-Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji akses untuk setiap _role_ menggunakan kredensial di bawah ini.
+Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji akses untuk setiap _role_ menggunakan data berikut.
 
-**Password untuk semua akun adalah:** `password`
+**Password untuk semua akun yang dibuat lewat seeder adalah:** `password123`
 
-### Akun Utama (SMA Negeri 1 Siperflex)
+> Saat ini, seed default yang aktif mencakup dua sekolah utama: **SMA Negeri 1 Siperflex** dan **SMP Negeri 40 Makassar**. Data sekolah lain, termasuk yang berhubungan dengan SMPN 47 Makassar, telah dihapus dari seeder.
 
-| Peran (Role)          | Email Default                        | NIS / NIP               |
-| :-------------------- | :----------------------------------- | :---------------------- |
-| **Super Admin**       | `superadmin@siperflex.com`           | -                       |
-| **Admin Sekolah**     | `admin@sman1siperflex.sch.id`        | NIP:                    |
-|  |
-| **Guru (Wali Kelas)** | `budi@sman1siperflex.sch.id`         | NIP: 198502022012021002 |
-| **Siswa**             | `andi@student.sman1siperflex.sch.id` | NIS: 12345              |
+### Akun Utama
 
-### Akun Dummy (SMA Dummy 1 - 5 Siperflex)
+| Peran (Role)      | Email Default                    | Keterangan |
+| :---------------- | :------------------------------- | :--------- |
+| **Super Admin**   | `superadmin@siperflex.com`       | Platform-level |
+| **Admin Sekolah** | `admin@sman1siperflex.sch.id`   | SMA Negeri 1 Siperflex |
+| **Admin Sekolah** | `admin@smpn40.sch.id`           | SMP Negeri 40 Makassar |
 
-Berikut adalah daftar akun **Admin Sekolah** untuk masing-masing sekolah dummy yang digenerate otomatis:
+### Guru & Siswa
 
-| Sekolah         | Email Admin                 |
-| :-------------- | :-------------------------- |
-| **SMA Dummy 1** | `admin.sma1@siperflex.test` |
-| **SMA Dummy 2** | `admin.sma2@siperflex.test` |
-| **SMA Dummy 3** | `admin.sma3@siperflex.test` |
-| **SMA Dummy 4** | `admin.sma4@siperflex.test` |
-| **SMA Dummy 5** | `admin.sma5@siperflex.test` |
+Guru dan siswa dibuat otomatis oleh seeder berdasarkan data sekolah yang aktif. Anda dapat login dengan:
 
-> _Catatan tambahan: Untuk Guru dan Siswa pada sekolah dummy, login bisa menggunakan Email masing-masing. Form login bersifat fleksibel. Anda dapat masuk menggunakan Email, NIS (bagi Siswa), atau NIP (bagi Guru dan Admin)._
+- **Email akun guru/siswa** yang tercatat di database
+- **NIP** untuk akun guru/admin
+- **NIS** untuk akun siswa
+
+#### Contoh dari `AbsensiDataSeeder.php`
+
+Berikut contoh akun yang benar-benar dibuat oleh seeder di [database/seeders/AbsensiDataSeeder.php](database/seeders/AbsensiDataSeeder.php):
+
+| Peran | Nama | Contoh Login | Password |
+| :----- | :---- | :----------- | :------- |
+| **Guru** | `Sa'adah Layly, M.Pd.` | `sa'adahlaylympd@smpn40.sch.id` | `password123` |
+| **Murid** | `Adriansyah` | `adriansyah183089@student.smpn40.sch.id` | `password123` |
+
+> Catatan: format email di seeder mengikuti pola otomatis yang dibuat dari nama dan NIP/NIS masing-masing. Karena itu, contoh di atas hanya mewakili satu guru dan satu siswa yang ada di data seed yang aktif.
+
+Jika Anda ingin melihat daftar akun yang benar-benar dibuat, cek hasil migrasi/seed dari database atau jalankan perintah berikut untuk melihat user yang aktif:
+
+```bash
+php artisan tinker
+User::whereIn('role', ['super_admin', 'admin_sekolah', 'guru', 'siswa'])->get(['name', 'email', 'role', 'school_id']);
+```
 
 ---
 

@@ -4,12 +4,12 @@
         <!-- Abstract Background Decoration -->
         <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5 blur-2xl"></div>
         <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-primary-400 opacity-20 blur-xl"></div>
-        
+
         <div class="relative z-10">
             <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Manajemen Sekolah</h2>
             <p class="text-primary-100 font-medium mt-1">Kelola data sekolah yang terdaftar di sistem</p>
         </div>
-        
+
         <div class="relative z-10 w-full sm:w-auto mt-4 sm:mt-0 text-left sm:text-right">
             <button wire:click="openForm" class="bg-white text-primary-700 hover:bg-primary-50 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -31,7 +31,7 @@
                 <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 {{ $isEditing ? 'Edit Data Sekolah' : 'Tambah Sekolah Baru' }}
             </h3>
-            
+
             <form wire:submit="save" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -65,7 +65,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-neutral-700 mb-1">Alamat Lengkap <span class="text-red-500">*</span></label>
                     <textarea wire:model="address" rows="3" class="w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" required></textarea>
@@ -101,7 +101,7 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     <div class="bg-neutral-50 rounded-lg p-3 space-y-2 mb-4 border border-neutral-100">
                         <div class="flex items-center text-sm text-neutral-700">
                             <svg class="w-4 h-4 mr-2 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
@@ -112,7 +112,7 @@
                             <span>{{ $school->phone }}</span>
                         </div>
                     </div>
-                    
+
                     <div class="flex gap-2">
                         <button wire:click="showAdmins({{ $school->id }})" class="flex-1 flex justify-center items-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 py-2.5 rounded-lg text-sm font-semibold transition-colors border border-blue-200">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -121,6 +121,10 @@
                         <button wire:click="openForm({{ $school->id }})" class="flex-1 flex justify-center items-center gap-2 bg-primary-50 text-primary-700 hover:bg-primary-100 hover:text-primary-800 py-2.5 rounded-lg text-sm font-semibold transition-colors border border-primary-200">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             Edit
+                        </button>
+                        <button wire:click="deleteSchool({{ $school->id }})" wire:confirm="Apakah Anda yakin ingin menghapus sekolah {{ addslashes($school->name) }}?" class="flex-1 flex justify-center items-center gap-2 bg-red-50 text-red-700 hover:bg-red-100 py-2.5 rounded-lg text-sm font-semibold transition-colors border border-red-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M3 7h18M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3"></path></svg>
+                            Delete
                         </button>
                     </div>
                 </div>
@@ -185,6 +189,10 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                     Edit
                                 </button>
+                                <button wire:click="deleteSchool({{ $school->id }})" wire:confirm="Apakah Anda yakin ingin menghapus sekolah {{ addslashes($school->name) }}?" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300 rounded-lg text-sm font-semibold transition-all shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M3 7h18M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3"></path></svg>
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -216,7 +224,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-                
+
                 <div class="p-6">
                     @if(count($selectedSchoolAdmins) > 0)
                         <div class="space-y-4">
@@ -259,7 +267,7 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <div class="px-6 py-4 border-t border-neutral-100 bg-neutral-50 flex justify-end">
                     <button wire:click="closeAdminModal" class="px-4 py-2 bg-neutral-200 hover:bg-neutral-300 text-neutral-700 font-medium rounded-lg transition-colors">
                         Tutup

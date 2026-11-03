@@ -100,6 +100,18 @@
             </form>
         </div>
 
+        {{-- Tentang Kami Button --}}
+        <div class="p-4 border-t border-primary-600">
+            <a href="{{ route('tentang.kami') }}"
+                class="w-full flex items-center gap-2 px-3 py-2 text-sm text-primary-200 font-medium rounded hover:bg-primary-600 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Tentang Kami
+            </a>
+        </div>
+
         <div class="p-4 border-t border-primary-600 text-sm text-primary-200">
             &copy; {{ date('Y') }} Siperflex
         </div>
@@ -239,8 +251,11 @@
                 </a>
             @endif
 
+            
+
         </div>
     </nav>
+
     <!-- PWA Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
